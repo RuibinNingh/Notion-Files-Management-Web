@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0-Beta",
+  "build_date": "2026-02-12",
+  "download_url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/latest",
+  "github": "RuibinNingh/Notion-Files-Management",
+  "changelog": [
+    "修复页面切换任务消失问题",
+    "引入 UploadSession 单例管理",
+    "优化 GIL 安全层，解决并发死锁",
+    "新增 Notion 页面文件信息探测工具"
+  ]
+}

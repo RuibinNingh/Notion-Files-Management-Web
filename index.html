@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="bg-[#050509] text-white selection:bg-blue-500/30">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion Files Management | 极致上传下载方案</title>
+    <link rel="icon" type="image/x-icon" href="icon.ico">
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --accent: #3b82f6; --bg: #050509; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); overflow-x: hidden; perspective: 1000px; }
+        
+        /* --- 核心组件样式 --- */
+        .glass-nav { background: rgba(5, 5, 9, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .glass-card { background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); box-shadow: 0 20px 40px -20px rgba(0,0,0,0.8); }
+        .tech-tag { font-family: 'Fira Code', monospace; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #93c5fd; box-shadow: 0 0 15px rgba(59,130,246,0.1) inset; }
+        
+        /* --- 动态特效 --- */
+        .shimmer { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); background-size: 200% 100%; animation: shimmer 4s infinite linear; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        /* 漂浮粒子背景 */
+        .particle { position: absolute; border-radius: 50%; opacity: 0.3; pointer-events: none; animation: float 20s infinite linear; }
+        .particle:nth-child(1) { width: 4px; height: 4px; background: #3b82f6; top: 20%; left: 10%; animation-duration: 25s; }
+        .particle:nth-child(2) { width: 6px; height: 6px; background: #22d3ee; top: 60%; left: 80%; animation-duration: 30s; animation-delay: -5s; }
+        .particle:nth-child(3) { width: 3px; height: 3px; background: #a855f7; top: 80%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; background: #3b82f6; top: 10%; left: 70%; animation-duration: 28s; animation-delay: -2s; }
+        .particle:nth-child(5) { width: 4px; height: 4px; background: #22d3ee; top: 40%; left: 50%; animation-duration: 26s; animation-delay: -8s; }
+        .particle:nth-child(6) { width: 5px; height: 5px; background: #a855f7; top: 70%; left: 15%; animation-duration: 24s; animation-delay: -12s; }
+        @keyframes float { 
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.1; } 
+            50% { transform: translateY(-100px) translateX(50px) rotate(180deg); opacity: 0.5; } 
+            100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0.1; } 
+        }
+
+        /* 鼠标轨迹粒子 */
+        .cursor-trail { position: fixed; width: 8px; height: 8px; border-radius: 50%; background: rgba(59,130,246,0.6); pointer-events: none; z-index: 9999; opacity: 0; animation: trail-fade 0.8s ease-out forwards; }
+        @keyframes trail-fade { 
+            0% { transform: scale(1); opacity: 0.8; } 
+            100% { transform: scale(0); opacity: 0; } 
+        }
+
+        /* --- Hero 图片增强特效 --- */
+        .hero-perspective { perspective: 1500px; transform-style: preserve-3d; }
+        .hero-card-container { transform-style: preserve-3d; will-change: transform; transition: box-shadow 0.2s ease-out; }
+        .hero-sheen { 
+            position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; z-index: 2;
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 55%, transparent 100%);
+            background-size: 200% 200%; transition: background-position 0.2s ease-out;
+        }
+        .hero-glow { position: absolute; inset: -20px; background: radial-gradient(circle at center, rgba(59,130,246,0.4) 0%, transparent 70%); filter: blur(30px); z-index: -1; opacity: 0; transition: opacity 0.3s; }
+        
+        /* --- 新增特效 --- */
+        .code-flow { position: absolute; width: 2px; height: 100px; background: linear-gradient(transparent, #3b82f6, transparent); animation: flow 3s linear infinite; opacity: 0.3; }
+        @keyframes flow {
+            0% { top: -100px; }
+            100% { top: 100%; }
+        }
+
+        .pulse-ring { position: absolute; border: 2px solid rgba(59,130,246,0.5); border-radius: 50%; animation: pulse-expand 2s ease-out infinite; }
+        @keyframes pulse-expand {
+            0% { width: 30px; height: 30px; opacity: 1; }
+            100% { width: 100px; height: 100px; opacity: 0; }
+        }
+
+        .feature-card { position: relative; overflow: hidden; }
+        .feature-card::before { 
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; 
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+            opacity: 0; transition: opacity 0.5s; transform: scale(0);
+        }
+        .feature-card:hover::before { opacity: 1; transform: scale(1); transition: opacity 0.5s, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        .magnetic-btn { display: inline-block; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+
+        .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, #3b82f6, #22d3ee); transform-origin: left; z-index: 9999; }
+    </style>
+</head>
+<body>
+    <div id="scroll-progress" class="scroll-progress" style="transform: scaleX(0);"></div>
+
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-blue-700/10 blur-[150px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-[-20%] right-[-20%] w-[50%] h-[50%] bg-purple-600/10 blur-[130px] rounded-full animate-pulse" style="animation-delay: 2s;"></div>
+        <div class="code-flow" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="code-flow" style="left: 30%; animation-delay: 1.2s;"></div>
+        <div class="code-flow" style="left: 60%; animation-delay: 2.4s;"></div>
+        <div class="code-flow" style="left: 85%; animation-delay: 1.8s;"></div>
+    </div>
+
+    <nav class="fixed top-0 w-full z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-all overflow-hidden">
+                    <img src="icon.png" alt="Logo" class="w-full h-full object-cover" />
+                </div>
+                <span class="font-bold tracking-tight hidden md:block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Notion Files Management</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm font-bold text-gray-400">
+                <a href="#features" class="hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-blue-500 hover:after:w-full after:transition-all">核心功能</a>
+                <a href="#workflow" class="hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-blue-500 hover:after:w-full after:transition-all">使用流程</a>
+                <a href="#architecture" class="hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-blue-500 hover:after:w-full after:transition-all">技术架构</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/RuibinNingh/Notion-Files-Management" class="text-gray-400 hover:text-white magnetic-btn p-2"><i data-lucide="github" class="w-6 h-6"></i></a>
+                <a id="nav-download-btn" href="#" class="magnetic-btn bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-lg text-sm font-bold transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-600/50 flex items-center gap-2">
+                    <i data-lucide="zap" class="w-4 h-4"></i> 立即获取
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative pt-40 pb-32 px-6 overflow-visible">
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <div id="hero-content" class="opacity-0 translate-y-10 mb-16">
+                <h1 class="text-7xl md:text-9xl font-black mb-6 tracking-tighter italic leading-none bg-gradient-to-b from-white via-gray-200 to-gray-600 bg-clip-text text-transparent">
+                    Notion <br/><span class="text-blue-500 drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">终极文件管理方案</span>
+                </h1>
+                <p id="typewriter" class="text-xl md:text-2xl font-mono text-blue-300/90 mb-10 h-8">_</p>
+                <div class="flex justify-center gap-4 flex-wrap">
+                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="cpu" class="w-3 h-3"></i> .NET 8.0 WPF</div>
+                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="code-2" class="w-3 h-3"></i> Python 3.11 Embedded</div>
+                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="lock" class="w-3 h-3"></i> GIL-Safe Async</div>
+                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="zap" class="w-3 h-3"></i> 多线程并发</div>
+                </div>
+            </div>
+            
+            <div class="hero-perspective relative group max-w-4xl mx-auto">
+                <div id="main-preview-container" class="hero-card-container glass-card rounded-2xl p-1 relative z-10">
+                    <div class="hero-glow group-hover:opacity-100"></div>
+                    <div class="rounded-xl overflow-hidden relative z-20 border border-white/10">
+                        <img src="screenshot/主页页面,程序运行时默认页面.png" alt="UI Preview" class="w-full h-auto block">
+                        <div id="hero-sheen" class="hero-sheen bg-[position:50%_50%]"></div>
+                    </div>
+                </div>
+                <div class="absolute -top-12 -right-12 glass-card p-4 rounded-lg z-30 floating-element" data-speed="1.2">
+                    <i data-lucide="activity" class="text-blue-400 w-6 h-6"></i>
+                </div>
+                <div class="absolute -bottom-8 -left-8 glass-card p-4 rounded-lg z-30 floating-element" data-speed="1.5">
+                    <span class="font-mono text-xs text-blue-300">STATUS: READY</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <section id="features" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+        <h2 class="section-title text-4xl font-black mb-16 flex items-center gap-4 italic opacity-0 translate-y-10">
+            <span class="text-blue-500">#</span> SYSTEM MODULES <span class="text-gray-600 text-lg not-italic font-mono">// 功能矩阵</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+            <div class="md:col-span-7 glass-card p-10 group hover:border-blue-500/40 transition-all relative overflow-hidden scroll-item opacity-0 translate-y-20 rotate-x-10 feature-card">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="flex justify-between mb-10 relative">
+                    <div class="w-14 h-14 bg-blue-600/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="download-cloud" class="text-blue-400 w-8 h-8"></i>
+                    </div>
+
+                </div>
+                <h3 class="text-2xl font-black mb-4 relative">批量下载引擎</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">智能探测文件大小，支持多线程并发下载。实时进度追踪，ETA 估算，断点续传支持。</p>
+                <ul class="space-y-3 relative">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">HEAD 请求预探测文件大小，精确显示下载量</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">可配置并发数（默认 3 线程），优化网络利用率</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">实时速度监控与 EMA 平滑，剩余时间智能预测</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-5 glass-card p-10 group hover:border-purple-500/40 transition-all relative overflow-hidden scroll-item opacity-0 translate-y-20 rotate-y-10 feature-card">
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="flex justify-between mb-10 relative">
+                    <div class="w-14 h-14 bg-purple-600/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="upload-cloud" class="text-purple-400 w-8 h-8"></i>
+                    </div>
+
+                </div>
+                <h3 class="text-2xl font-black mb-4 relative">分片上传系统</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">15MB 分片策略，智能限流，队列管理。支持大文件上传，实时进度反馈。</p>
+                <ul class="space-y-3 relative">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-purple-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">15MB 自动分片，突破单文件大小限制</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-purple-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">队列化管理，支持多文件批量上传</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-5 glass-card p-10 group hover:border-cyan-500/40 transition-all relative overflow-hidden scroll-item opacity-0 translate-y-20 feature-card">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="flex justify-between mb-10 relative">
+                    <div class="w-14 h-14 bg-cyan-600/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="wrench" class="text-cyan-400 w-8 h-8"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-black mb-4 relative">工具箱聚合</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">页面文件信息统计，快速查看文件分布、总大小、类型分析。</p>
+                <ul class="space-y-3 relative">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-cyan-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">一键获取页面文件清单</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-7 glass-card p-10 group hover:border-orange-500/40 transition-all relative overflow-hidden scroll-item opacity-0 translate-y-20 feature-card">
+                <div class="absolute inset-0 bg-gradient-to-br from-orange-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="flex justify-between mb-10 relative">
+                    <div class="w-14 h-14 bg-orange-600/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="settings" class="text-orange-400 w-8 h-8"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-black mb-4 relative">灵活配置管理</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">可视化设置界面，支持 Notion Token、API 地址、并发数等参数配置。配置持久化存储。</p>
+                <ul class="space-y-3 relative">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-orange-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">配置文件保存在 %AppData%，跨版本迁移无缝</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-orange-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">应用设置后自动重置任务状态，确保配置生效</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="workflow" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+        <h2 class="section-title text-4xl font-black mb-16 flex items-center gap-4 italic opacity-0 translate-y-10">
+            <span class="text-blue-500">#</span> WORKFLOW <span class="text-gray-600 text-lg not-italic font-mono">// 使用流程</span>
+        </h2>
+
+        <div class="mb-20 scroll-item opacity-0 translate-y-20">
+            <h3 class="text-2xl font-bold mb-8 flex items-center gap-3">
+                <i data-lucide="download" class="text-blue-400"></i>
+                批量下载流程
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 feature-card">
+                    <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl font-black text-blue-400">1</span>
+                    </div>
+                    <h4 class="font-bold mb-3">输入页面 ID</h4>
+                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
+                        <img src="screenshot/下载页面-提示输入页面ID窗口.png" alt="输入页面ID" class="w-full h-auto">
+                    </div>
+                    <p class="text-sm text-gray-400">在下载页面输入 Notion 页面 ID，点击"获取列表"</p>
+                </div>
+
+                <div class="glass-card p-6 feature-card">
+                    <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl font-black text-blue-400">2</span>
+                    </div>
+                    <h4 class="font-bold mb-3">选择下载项</h4>
+                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
+                        <img src="screenshot/下载页面-提示选择下载项.png" alt="选择下载项" class="w-full h-auto">
+                    </div>
+                    <p class="text-sm text-gray-400">系统自动探测文件大小，选择需要下载的文件</p>
+                </div>
+
+                <div class="glass-card p-6 feature-card">
+                    <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl font-black text-blue-400">3</span>
+                    </div>
+                    <h4 class="font-bold mb-3">监控下载进度</h4>
+                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
+                        <img src="screenshot/下载页面-成功下载后的下载列表截图.png" alt="下载进度" class="w-full h-auto">
+                    </div>
+                    <p class="text-sm text-gray-400">实时查看下载速度、进度和 ETA</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-item opacity-0 translate-y-20">
+            <h3 class="text-2xl font-bold mb-8 flex items-center gap-3">
+                <i data-lucide="upload" class="text-purple-400"></i>
+                批量上传流程
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card p-6 feature-card">
+                    <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl font-black text-purple-400">1</span>
+                    </div>
+                    <h4 class="font-bold mb-3">选择文件并填写页面 ID</h4>
+                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
+                        <img src="screenshot/上传页面-选择上传文件和填写上传页面id截图.png" alt="选择上传文件" class="w-full h-auto">
+                    </div>
+                    <p class="text-sm text-gray-400">选择本地文件，输入目标 Notion 页面 ID</p>
+                </div>
+
+                <div class="glass-card p-6 feature-card">
+                    <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl font-black text-purple-400">2</span>
+                    </div>
+                    <h4 class="font-bold mb-3">监控上传进度</h4>
+                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
+                        <img src="screenshot/上传页面-提交上传文件后上传进度截图.png" alt="上传进度" class="w-full h-auto">
+                    </div>
+                    <p class="text-sm text-gray-400">实时查看上传速度、分片进度和状态</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+        <h2 class="section-title text-4xl font-black mb-16 flex items-center gap-4 italic opacity-0 translate-y-10">
+            <span class="text-blue-500">#</span> UI SHOWCASE <span class="text-gray-600 text-lg not-italic font-mono">// 界面展示</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-6 scroll-item opacity-0 translate-y-20 feature-card">
+                <h4 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="file-down" class="text-blue-400"></i>
+                    下载页面
+                </h4>
+                <div class="rounded-lg overflow-hidden border border-white/10">
+                    <img src="screenshot/文件下载页面.png" alt="下载页面" class="w-full h-auto">
+                </div>
+            </div>
+
+            <div class="glass-card p-6 scroll-item opacity-0 translate-y-20 feature-card">
+                <h4 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="file-up" class="text-purple-400"></i>
+                    上传页面
+                </h4>
+                <div class="rounded-lg overflow-hidden border border-white/10">
+                    <img src="screenshot/文件上传页面.png" alt="上传页面" class="w-full h-auto">
+                </div>
+            </div>
+
+            <div class="glass-card p-6 scroll-item opacity-0 translate-y-20 feature-card">
+                <h4 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="wrench" class="text-cyan-400"></i>
+                    工具箱页面
+                </h4>
+                <div class="rounded-lg overflow-hidden border border-white/10">
+                    <img src="screenshot/工具箱页面.png" alt="工具箱页面" class="w-full h-auto">
+                </div>
+            </div>
+
+            <div class="glass-card p-6 scroll-item opacity-0 translate-y-20 feature-card">
+                <h4 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="settings" class="text-orange-400"></i>
+                    设置页面
+                </h4>
+                <div class="rounded-lg overflow-hidden border border-white/10">
+                    <img src="screenshot/设置页面.png" alt="设置页面" class="w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+        <h2 class="section-title text-4xl font-black mb-16 flex items-center gap-4 italic opacity-0 translate-y-10">
+            <span class="text-blue-500">#</span> ARCHITECTURE <span class="text-gray-600 text-lg not-italic font-mono">// 技术架构</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-10 scroll-item opacity-0 translate-y-20 feature-card">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                        <i data-lucide="layers" class="text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">前后端分离</h3>
+                </div>
+                <div class="space-y-4 text-sm text-gray-300">
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">WPF 前端（C#）</div>
+                            <div class="text-gray-400">基于 .NET 8.0 和 WPF-UI 4.2.0 构建的现代化桌面界面</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">Python 后端</div>
+                            <div class="text-gray-400">Python 3.11 处理 Notion API 调用和文件传输逻辑</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">pythonnet 桥接</div>
+                            <div class="text-gray-400">C# 通过 pythonnet 3.0.5 无缝调用 Python 代码</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-10 scroll-item opacity-0 translate-y-20 feature-card">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center">
+                        <i data-lucide="shield-check" class="text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">GIL 安全机制</h3>
+                </div>
+                <div class="space-y-4 text-sm text-gray-300">
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">串行化调用</div>
+                            <div class="text-gray-400">PythonBackendHost 通过 SemaphoreSlim 确保单线程访问</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">GIL 包裹</div>
+                            <div class="text-gray-400">每次 Python 调用都包裹在 Py.GIL() 中</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">避免死锁</div>
+                            <div class="text-gray-400">异步轮询设计，确保 UI 响应性</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-10 scroll-item opacity-0 translate-y-20 feature-card">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-cyan-600/20 rounded-lg flex items-center justify-center">
+                        <i data-lucide="database" class="text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">会话持久化</h3>
+                </div>
+                <div class="space-y-4 text-sm text-gray-300">
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">单例模式</div>
+                            <div class="text-gray-400">DownloadSession 和 UploadSession 全局唯一实例</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">状态保留</div>
+                            <div class="text-gray-400">页面切换时保留任务列表和配置参数</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">自动恢复</div>
+                            <div class="text-gray-400">页面加载时根据会话状态恢复轮询</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-10 scroll-item opacity-0 translate-y-20 feature-card">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-orange-600/20 rounded-lg flex items-center justify-center">
+                        <i data-lucide="gauge" class="text-orange-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">异步轮询机制</h3>
+                </div>
+                <div class="space-y-4 text-sm text-gray-300">
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">定时器轮询</div>
+                            <div class="text-gray-400">UI 通过定时器定期获取后端任务状态</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">UI 响应保障</div>
+                            <div class="text-gray-400">避免阻塞 UI 线程，保持界面流畅</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">实时更新</div>
+                            <div class="text-gray-400">进度、速度、ETA 实时刷新显示</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+        <h2 class="section-title text-4xl font-black mb-16 flex items-center gap-4 italic opacity-0 translate-y-10">
+            <span class="text-blue-500">#</span> TECH STACK <span class="text-gray-600 text-lg not-italic font-mono">// 技术栈</span>
+        </h2>
+        <div class="glass-card p-10 scroll-item opacity-0 translate-y-20 feature-card">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="border-b border-white/10">
+                        <tr class="text-left">
+                            <th class="pb-4 font-bold text-blue-400">层次</th>
+                            <th class="pb-4 font-bold text-blue-400">技术</th>
+                            <th class="pb-4 font-bold text-blue-400">版本</th>
+                            <th class="pb-4 font-bold text-blue-400">用途</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300">
+                        <tr class="border-b border-white/5">
+                            <td class="py-4 font-mono text-xs text-blue-300">前端框架</td>
+                            <td class="py-4">WPF</td>
+                            <td class="py-4 font-mono">.NET 8.0</td>
+                            <td class="py-4 text-gray-400">现代化桌面 UI 框架</td>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-4 font-mono text-xs text-blue-300">UI 组件库</td>
+                            <td class="py-4">WPF-UI</td>
+                            <td class="py-4 font-mono">4.2.0</td>
+                            <td class="py-4 text-gray-400">现代化 UI 组件</td>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-4 font-mono text-xs text-blue-300">Python 桥接</td>
+                            <td class="py-4">pythonnet</td>
+                            <td class="py-4 font-mono">3.0.5</td>
+                            <td class="py-4 text-gray-400">C# 调用 Python 代码</td>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-4 font-mono text-xs text-blue-300">Python 运行时</td>
+                            <td class="py-4">Python Embedded</td>
+                            <td class="py-4 font-mono">3.11</td>
+                            <td class="py-4 text-gray-400">内嵌 Python 环境</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 font-mono text-xs text-blue-300">后端逻辑</td>
+                            <td class="py-4">Python Scripts</td>
+                            <td class="py-4 font-mono">3.11+</td>
+                            <td class="py-4 text-gray-400">文件传输与 Notion API</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 px-6 max-w-4xl mx-auto text-center relative z-10">
+        <div class="glass-card p-16 scroll-item opacity-0 scale-95 feature-card">
+            <div class="relative">
+                <div class="pulse-ring absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-600/30 relative">
+                    <img src="icon.png" alt="Logo" class="w-16 h-16 object-cover rounded-lg" />
+                </div>
+            </div>
+            <h2 class="text-4xl font-black mb-6 italic">准备好体验极致文件管理了吗？</h2>
+            <p class="text-lg text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto">
+                开源免费，无需安装 Python 环境。下载即用，支持 Windows 10/11 x64 平台。
+            </p>
+            <div class="bg-gray-900/50 rounded-xl p-6 mb-8 font-mono text-xs text-left relative overflow-hidden">
+                <div class="shimmer absolute inset-0"></div>
+                <div class="text-gray-500 mb-2">// version.json</div>
+                <pre id="version-json" class="text-blue-300 overflow-x-auto relative z-10">Loading...</pre>
+            </div>
+            <div class="flex flex-col md:flex-row gap-6 mt-8 relative z-10">
+                <a id="main-download-btn" href="#" class="magnetic-btn flex-1 bg-white text-black font-black py-4 rounded-xl text-center hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-blue-500/30 group">
+                    <i data-lucide="download" class="group-hover:animate-bounce"></i> 下载最新稳定版编译
+                </a>
+                <a href="https://github.com/RuibinNingh/Notion-Files-Management" class="magnetic-btn flex-1 border-2 border-white/10 font-bold py-4 rounded-xl text-center hover:bg-white/10 hover:border-white/30 text-white transition-all flex items-center justify-center gap-3">
+                    <i data-lucide="github"></i> Star on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-white/5 text-center font-mono text-xs text-gray-500 relative z-10 bg-black/80 backdrop-blur-md">
+        <p>DESIGNED FOR NOTION POWER USERS. <br class="md:hidden"/>&copy; 2026 NOTION FILES MANAGEMENT PROJECT.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        window.addEventListener('scroll', () => {
+            const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+            document.getElementById('scroll-progress').style.transform = `scaleX(${scrollProgress})`;
+        });
+
+        let trailTimeout;
+        document.addEventListener('mousemove', (e) => {
+            clearTimeout(trailTimeout);
+            trailTimeout = setTimeout(() => {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+                document.body.appendChild(trail);
+                setTimeout(() => trail.remove(), 800);
+            }, 50);
+        });
+
+        function animateNumber(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 30);
+        }
+
+        const typeText = "批量下载、分片上传、工具箱聚合 —— WPF + Python 强力驱动。_";
+        let typeIndex = 0;
+        const typeTarget = document.getElementById("typewriter");
+        function typeWriter() {
+            if (typeIndex < typeText.length) {
+                typeTarget.innerHTML = typeText.substring(0, typeIndex + 1) + '<span class="animate-pulse">|</span>';
+                typeIndex++;
+                setTimeout(typeWriter, typeText[typeIndex-1] === '、' ? 300 : 60);
+            } else {
+                typeTarget.innerHTML = typeText.substring(0, typeText.length - 1) + '<span class="animate-pulse">_</span>';
+            }
+        }
+
+        window.onload = () => {
+            gsap.to("#hero-content", { opacity: 1, y: 0, duration: 1.5, ease: "power4.out", onComplete: typeWriter });
+            
+            fetch('./version.json')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('version-json').innerText = JSON.stringify(data, null, 2);
+                    const downloadLinks = document.querySelectorAll('#nav-download-btn, #main-download-btn');
+                    downloadLinks.forEach(btn => btn.href = data.download_url);
+                })
+                .catch(() => {
+                    document.getElementById('version-json').innerText = "// Failed to fetch version info.";
+                });
+
+            gsap.utils.toArray(".scroll-item, .section-title").forEach(item => {
+                gsap.fromTo(item, 
+                    { opacity: 0, y: 50, rotateX: item.classList.contains('rotate-x-10') ? 15 : 0, rotateY: item.classList.contains('rotate-y-10') ? 15 : 0 },
+                    { 
+                        scrollTrigger: { 
+                            trigger: item, 
+                            start: "top bottom-=100", 
+                            toggleActions: "play none none reverse",
+                            onEnter: () => {
+                                const statNumber = item.querySelector('.stat-number[data-target]');
+                                if (statNumber && !statNumber.classList.contains('animated')) {
+                                    statNumber.classList.add('animated');
+                                    animateNumber(statNumber);
+                                }
+                            }
+                        },
+                        opacity: 1, y: 0, rotateX: 0, rotateY: 0, duration: 1, ease: "power3.out"
+                    }
+                );
+            });
+        };
+
+        const container = document.querySelector('.hero-perspective');
+        const card = document.getElementById('main-preview-container');
+        const sheen = document.getElementById('hero-sheen');
+        const floaters = document.querySelectorAll('.floating-element');
+
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const xPct = (e.clientX - rect.left) / rect.width * 2 - 1;
+            const yPct = (e.clientY - rect.top) / rect.height * 2 - 1;
+
+            gsap.to(card, { 
+                rotateX: -yPct * 12, 
+                rotateY: xPct * 12, 
+                z: 50,
+                boxShadow: `${-xPct * 30}px ${yPct * 30}px 60px rgba(0,0,0,0.5)`,
+                duration: 0.4, ease: "power2.out" 
+            });
+
+            gsap.to(sheen, { 
+                backgroundPosition: `${50 + xPct * 40}% ${50 + yPct * 40}%`, 
+                duration: 0.4, ease: "power2.out" 
+            });
+
+            floaters.forEach(floater => {
+                const speed = floater.getAttribute('data-speed');
+                gsap.to(floater, { x: -xPct * 40 * speed, y: -yPct * 40 * speed, duration: 0.6, ease: "power2.out" });
+            });
+        });
+
+        container.addEventListener('mouseleave', () => {
+            gsap.to(card, { rotateX: 0, rotateY: 0, z: 0, boxShadow: '0 20px 40px -20px rgba(0,0,0,0.8)', duration: 1, ease: "elastic.out(1, 0.5)" });
+            gsap.to(sheen, { backgroundPosition: '50% 50%', duration: 1, ease: "power2.out" });
+            gsap.to(floaters, { x: 0, y: 0, duration: 1, ease: "elastic.out(1, 0.5)" });
+        });
+
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - (rect.left + rect.width / 2);
+                const y = e.clientY - (rect.top + rect.height / 2);
+                gsap.to(btn, { x: x * 0.2, y: y * 0.2, duration: 0.3, ease: "power2.out" });
+            });
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, { x: 0, y: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" });
+            });
+        });
+    </script>
+</body>
+</html>

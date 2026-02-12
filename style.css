@@ -1,0 +1,61 @@
+:root {
+    --bg-dark: #050509;
+    --accent-blue: #3b82f6;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Inter', sans-serif;
+    color: white;
+}
+
+/* 玻璃拟态卡片 */
+.glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card-sub {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+}
+
+.glass-tag {
+    background: rgba(59, 130, 246, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 99px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    z-index: 10;
+}
+
+/* 3D 透视效果 */
+.perspective-container {
+    perspective: 2000px;
+}
+
+.transform-3d {
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* 隐藏滚动条但保留功能 */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #050509;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e1e2e;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3b82f6;
+}
