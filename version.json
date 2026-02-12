@@ -4,9 +4,10 @@
   "download_url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/latest",
   "github": "RuibinNingh/Notion-Files-Management",
   "changelog": [
-    "修复页面切换任务消失问题",
-    "引入 UploadSession 单例管理",
-    "优化 GIL 安全层，解决并发死锁",
-    "新增 Notion 页面文件信息探测工具"
+    "首个版本发布🎉",
+    "📥 批量下载 · 自动获取文件列表 · 并发探测文件大小 · 多线程下载 · 实时速度与进度",
+    "📤 批量上传 · 多文件批量选择 · 自动分片（15 MB/片）· 内置限流保护 · EMA 平滑速度",
+    "🔧 工具箱 · 探测页面文件信息与总大小统计",
+    "⚙️ 设置 · Token 配置 · 并发数管理 · 检查版本更新（含更新日志展示）"
   ]
 }
