@@ -1,14 +1,14 @@
 {
-  "version": "1.0.0-Beta",
-  "build_date": "2026-02-12",
-  "download_url": "https://zyx-2012.lanzn.com/b014x2eweh",
+  "version": "1.0.2-Beta",
+  "build_date": "2026-02-13",
+  "download_url": "https://wwavl.lanzouu.com/b00tcb1d9c",
   "github": "RuibinNingh/Notion-Files-Management",
   "changelog": [
-    "首个版本发布🎉",
-    "📥 批量下载 · 自动获取文件列表 · 并发探测文件大小 · 多线程下载 · 实时速度与进度",
-    "📤 批量上传 · 多文件批量选择 · 自动分片（15 MB/片）· 内置限流保护 · EMA 平滑速度",
-    "🔧 工具箱 · 探测页面文件信息与总大小统计",
-    "⚙️ 设置 · Token 配置 · 并发数管理 · 检查版本更新（含更新日志展示）",
+    "优化日志系统：日志统一保存到 AppData 目录，避免写入临时目录",
+    "新增查看日志功能：工具箱支持一键打开日志文件夹",
+    "移除图标与主题实验室调试功能，简化界面",
+    "修复单文件发布时日志路径异常问题",
+    "提升程序稳定性与兼容性",
     "蓝奏云密码:NFM"
   ]
 }
