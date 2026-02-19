@@ -1,17 +1,19 @@
 {
-  "version": "1.3.0-Status",
+  "version": "1.4.0-Status",
   "build_date": "2026-02-19",
   "download_url": "https://wwavl.lanzouu.com/b00tcb1d9c",
   "github": "RuibinNingh/Notion-Files-Management",
   "changelog": [
-    "版本状态升级：从 Beta 升级为 Status（正式版）",
-    "新功能 - 数据源迁移：工具箱新增「数据源迁移」功能，支持将源数据源的所有页面按属性映射批量同步属性值到目标数据源",
-    "数据源迁移支持属性映射配置、标题匹配同步、多线程并发执行及实时进度监控",
-    "新功能 - 批量去除页面标题后缀：工具箱新增「批量去除后缀」功能，支持批量去除数据库页面标题中的指定后缀",
-    "批量去除后缀支持自定义后缀内容、自动 trim 空格、空标题安全保护及多线程并发处理",
-    "Python 后端：使用 Notion API 2025-09-03 Data Sources API，新增多个数据库操作方法",
-    "Python 后端：新增 migrate.py 和 batch_rename.py 模块，支持多线程任务执行",
-    "C# 前端：NotionBackendService 新增迁移和批量去除后缀的门面方法及交互弹窗",
-    "蓝奏云密码：NFM"
+    "功能升级 - Notion 页面大小自动更新/查询:工具箱「Notion 页面信息」升级为「Notion 页面大小自动更新/查询」",
+    "新增「自动更新」模式:扫描数据源中选定页面的所有文件块,通过 HTTP HEAD 请求获取文件实际大小,累加后自动写入用户指定的数字属性",
+    "双线程池架构:链接查询线程池(默认 3)负责 Notion API 递归查询,大小查询线程池(默认 5)负责 HEAD 请求和属性更新",
+    "全局 Notion API 速率限制器:所有 API 调用共享速率限制(0.34s/请求),确保不超过 3 req/s",
+    "生产者-消费者模型:链接查询线程作为生产者提取文件 URL,大小查询线程作为消费者探测文件大小并更新属性",
+    "页面选择步骤:预扫描数据源页面,按大小属性是否已设置分类,支持全选/反选及自定义线程数",
+    "响应式弹窗设计:页面选择弹窗通过 ResponsiveClampConverter 自适应窗口尺寸,确保按钮始终可见",
+    "Python 后端:新增 page_size_update.py 模块(PageSizeUpdateTask 类 + scan_pages_for_size_property 函数),main.py 新增 4 个入口方法",
+    "C# 前端:NotionBackendService 新增 4 个门面方法和 3 个记录类型,ToolsPage 新增 4 个模态卡片及约 350 行事件处理代码",
+    "原有「查询单个页面」功能完全保留,通过选择对话框分流",
+    "蓝奏云密码:NFM"
   ]
 }
