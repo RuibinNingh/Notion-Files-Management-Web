@@ -11,7 +11,7 @@
       "url": "https://wwavl.lanzouu.com/b00tcb1d9c",
       "icon": "cloud",
       "color": "blue",
-      "tip": ""
+      "tip": "蓝奏云密码:NFM"
     },
     {
       "id": "github",
@@ -23,10 +23,10 @@
       "tip": "GitHub 在国内访问可能较慢，建议优先使用蓝奏云线路。确定继续吗？"
     },
     {
-      "id": "mirror-cn",
+      "id": "mirror",
       "label": "备用镜像",
-      "description": "国内备用节点",
-      "url": "https://cn-mirror.ruibin-ningh.top/releases/NFM-1.4.5-Status.exe",
+      "description": "海外备用节点,速度视网络状况而定",
+      "url": "https://nfm.ruibin-ningh.top/download/Notion-Files-Management.exe",
       "icon": "server",
       "color": "cyan",
       "tip": ""
