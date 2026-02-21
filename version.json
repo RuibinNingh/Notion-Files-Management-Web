@@ -4,14 +4,14 @@
   "github": "RuibinNingh/Notion-Files-Management",
   "download": {
     "manual": {
-      "url": "https://nfm.ruibin-ningh.top/download",
+      "url": "https://nfm.ruibin-ningh.top/download/Notion-Files-Management.exe",
       "label": "官网下载页"
     },
     "auto": [
       {
         "id": "main",
         "label": "主线路",
-        "url": "https://nfm.ruibin-ningh.top/download/",
+        "url": "https://nfm.ruibin-ningh.top/download/Notion-Files-Management.exe",
         "priority": 1
       },
       {
