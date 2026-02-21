@@ -17,21 +17,21 @@
       {
         "id": "github",
         "label": "GitHub Release",
-        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.4.0/NFM-1.4.0-Status.exe",
+        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.4.6/Notion-Files-Management.exe",
         "priority": 2
       }
     ]
   },
   "changelog": [
-    "功能升级 - Notion 页面大小自动更新/查询:工具箱「Notion 页面信息」升级为「Notion 页面大小自动更新/查询」",
-    "新增「自动更新」模式:扫描数据源中选定页面的所有文件块,通过 HTTP HEAD 请求获取文件实际大小,累加后自动写入用户指定的数字属性",
-    "双线程池架构:链接查询线程池(默认 3)负责 Notion API 递归查询,大小查询线程池(默认 5)负责 HEAD 请求和属性更新",
-    "全局 Notion API 速率限制器:所有 API 调用共享速率限制(0.34s/请求),确保不超过 3 req/s",
-    "生产者-消费者模型:链接查询线程作为生产者提取文件 URL,大小查询线程作为消费者探测文件大小并更新属性",
-    "页面选择步骤:预扫描数据源页面,按大小属性是否已设置分类,支持全选/反选及自定义线程数",
-    "响应式弹窗设计:页面选择弹窗通过 ResponsiveClampConverter 自适应窗口尺寸,确保按钮始终可见",
-    "Python 后端:新增 page_size_update.py 模块(PageSizeUpdateTask 类 + scan_pages_for_size_property 函数),main.py 新增 4 个入口方法",
-    "C# 前端:NotionBackendService 新增 4 个门面方法和 3 个记录类型,ToolsPage 新增 4 个模态卡片及约 350 行事件处理代码",
-    "原有「查询单个页面」功能完全保留,通过选择对话框分流"
+    "全媒体类型下载:下载范围从仅 file 块扩展至 image、pdf、audio、video 共 5 种 Notion 媒体块,并支持页面图标、封面及 files 属性附件提取",
+    "原生块类型上传:上传时自动检测文件类型,图片挂载为 image 块(可预览)、视频为 video 块(可播放)、音频为 audio 块、PDF 为 pdf 块,其他保持 file 块",
+    "自动更新功能:启动时后台静默检查版本,设置页新增自动更新按钮,支持多线路优先级下载(installer 安装包 + exe 裸文件自替换两种模式)",
+    "主页版本提醒横幅:检测到新版本时主页顶部弹出液态玻璃风格横幅,支持一键跳转设置页更新",
+    "下载/上传页面卡片化重构:任务列表从三列横排改为全宽纵向卡片堆叠,进度条升级为 8px 全宽,新增状态色彩联动(蓝色进行中/绿色完成/红色失败/灰色等待)",
+    "设置页面整合:分散的保存/重启按钮合并为统一「应用配置」模块,所有反馈统一为内嵌式 InfoBar 替代系统弹窗",
+    "Bug 修复:页面大小更新结果全部为 0 GB — 引入 HEAD + Range GET 双策略探测,修复 Notion(S3)不返回 Content-Length 的问题",
+    "背景材质选项重命名为「视频或图片」,选择时显示功耗警告提示",
+    "URL 刷新与页面大小统计同步支持所有媒体块类型",
+    "版本号从 v1.4.0-Status 跳至 v1.4.6-Beta(v1.4.1~v1.4.5 为同日密集迭代)"
   ]
 }
