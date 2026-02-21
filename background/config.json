@@ -1,0 +1,16 @@
+{
+  "default": {
+    "name": "春节",
+    "src": "/background/春节.jpg"
+  },
+  "list": [
+    {
+      "name": "云朵",
+      "src": "/background/云朵.jpg"
+    },
+    {
+      "name": "夜景",
+      "src": "/background/夜景.jpg"
+    }
+  ]
+}
