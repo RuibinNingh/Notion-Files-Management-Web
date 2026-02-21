@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="bg-[#050509] text-white selection:bg-blue-500/30">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公告中心 | Notion Files Management</title>
+    <link rel="icon" type="image/x-icon" href="../icon.ico">
+    <link rel="icon" type="image/png" href="../icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --accent: #3b82f6; --bg: #050509; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); overflow-x: hidden; }
+
+        /* --- 导航 --- */
+        .glass-nav { background: rgba(5, 5, 9, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+
+        /* --- 卡片 --- */
+        .glass-card { background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); box-shadow: 0 20px 40px -20px rgba(0,0,0,0.8); border-radius: 1rem; }
+
+        /* --- 公告卡片 --- */
+        .notice-card { transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s; }
+        .notice-card:hover { border-color: rgba(59,130,246,0.25); box-shadow: 0 0 40px rgba(59,130,246,0.06); transform: translateY(-2px); }
+        .notice-card.pinned { border-left: 3px solid #3b82f6; }
+
+        /* --- 标签 --- */
+        .notice-tag { font-size: 0.7rem; padding: 2px 10px; border-radius: 99px; font-family: 'Fira Code', monospace; display: inline-block; letter-spacing: 0.02em; }
+        .notice-tag-更新 { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+        .notice-tag-维护 { background: rgba(234,179,8,0.15); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
+        .notice-tag-通知 { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+        .notice-tag-紧急 { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .notice-tag-default { background: rgba(156,163,175,0.15); color: #9ca3af; border: 1px solid rgba(156,163,175,0.3); }
+
+        /* --- 置顶徽章 --- */
+        .notice-pin-badge { font-size: 0.65rem; background: rgba(59,130,246,0.2); color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; }
+
+        /* --- Markdown 渲染 --- */
+        .notice-content { font-size: 0.9rem; line-height: 1.8; color: #9ca3af; }
+        .notice-content p { margin-bottom: 0.75rem; }
+        .notice-content p:last-child { margin-bottom: 0; }
+        .notice-content strong { color: #e5e7eb; font-weight: 600; }
+        .notice-content a { color: #60a5fa; text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+        .notice-content a:hover { color: #93c5fd; }
+        .notice-content ul { list-style: none; padding-left: 0; margin: 0.75rem 0; }
+        .notice-content li { position: relative; padding-left: 1.25rem; margin-bottom: 0.4rem; }
+        .notice-content li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: #3b82f6; opacity: 0.6; }
+        .notice-content code { font-family: 'Fira Code', monospace; font-size: 0.82em; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); padding: 1px 6px; border-radius: 4px; color: #93c5fd; }
+        .notice-content blockquote { border-left: 3px solid rgba(59,130,246,0.3); padding-left: 1rem; margin: 0.75rem 0; color: #6b7280; font-style: italic; }
+
+        /* --- 背景粒子 --- */
+        .particle { position: absolute; border-radius: 50%; opacity: 0.3; pointer-events: none; animation: float 20s infinite linear; }
+        .particle:nth-child(1) { width: 4px; height: 4px; background: #3b82f6; top: 15%; left: 8%; animation-duration: 25s; }
+        .particle:nth-child(2) { width: 6px; height: 6px; background: #22d3ee; top: 55%; left: 85%; animation-duration: 30s; animation-delay: -5s; }
+        .particle:nth-child(3) { width: 3px; height: 3px; background: #a855f7; top: 75%; left: 25%; animation-duration: 22s; animation-delay: -10s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; background: #3b82f6; top: 35%; left: 65%; animation-duration: 28s; animation-delay: -2s; }
+        @keyframes float {
+            0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.1; }
+            50%  { transform: translateY(-80px) translateX(40px) rotate(180deg); opacity: 0.5; }
+            100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0.1; }
+        }
+
+        /* --- 代码流光 --- */
+        .code-flow { position: absolute; width: 2px; height: 80px; background: linear-gradient(transparent, #3b82f6, transparent); animation: flow 3s linear infinite; opacity: 0.2; }
+        @keyframes flow { 0% { top: -80px; } 100% { top: 100%; } }
+
+        /* --- 加载动画 --- */
+        .loading-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #3b82f6; animation: dot-pulse 1.4s ease-in-out infinite; }
+        .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dot-pulse {
+            0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+            40% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* --- 筛选按钮 --- */
+        .filter-btn { transition: all 0.25s; }
+        .filter-btn:hover { background: rgba(255,255,255,0.06); }
+        .filter-btn.active { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); color: #93c5fd; }
+
+        /* --- 空状态 --- */
+        .empty-state { opacity: 0.5; }
+
+        /* --- 滚动条 --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050509; }
+        ::-webkit-scrollbar-thumb { background: #1e1e2e; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+    </style>
+</head>
+<body>
+    <!-- 背景特效 -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="absolute top-[-20%] left-[-15%] w-[50%] h-[50%] bg-blue-700/8 blur-[150px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-[-15%] right-[-15%] w-[45%] h-[45%] bg-purple-600/8 blur-[130px] rounded-full animate-pulse" style="animation-delay:2s;"></div>
+        <div class="code-flow" style="left:12%; animation-delay:0s;"></div>
+        <div class="code-flow" style="left:50%; animation-delay:1.5s;"></div>
+        <div class="code-flow" style="left:82%; animation-delay:0.8s;"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-8 h-8 rounded-lg overflow-hidden border border-white/10 group-hover:border-blue-500/50 transition-all">
+                    <img src="../icon.png" alt="Logo" class="w-full h-full object-cover" />
+                </div>
+                <span class="font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">返回主页</span>
+            </a>
+            <div class="hidden md:flex items-center gap-6 text-sm text-gray-400">
+                <span class="flex items-center gap-2 text-blue-400">
+                    <i data-lucide="bell" class="w-4 h-4"></i>
+                    公告中心
+                </span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/RuibinNingh/Notion-Files-Management" class="text-gray-400 hover:text-white transition-colors p-2"><i data-lucide="github" class="w-5 h-5"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="pt-32 pb-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- 页头 -->
+            <div id="page-header" class="mb-12 opacity-0 translate-y-10">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="megaphone" class="text-blue-400 w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-black italic tracking-tight">
+                            <span class="text-blue-500">#</span> NOTICES
+                        </h1>
+                        <p class="text-sm text-gray-500 font-mono">// 公告中心</p>
+                    </div>
+                </div>
+                <p class="text-gray-400 leading-relaxed mt-4">
+                    查看 Notion Files Management 的最新动态、版本更新和重要通知。
+                </p>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div id="filter-bar" class="flex flex-wrap items-center gap-3 mb-8 opacity-0 translate-y-10">
+                <span class="text-xs text-gray-500 font-mono mr-1">FILTER:</span>
+                <button class="filter-btn active text-xs font-mono px-3 py-1.5 rounded-lg border border-white/10 text-gray-300" data-filter="all">全部</button>
+                <button class="filter-btn text-xs font-mono px-3 py-1.5 rounded-lg border border-white/10 text-gray-400" data-filter="更新">更新</button>
+                <button class="filter-btn text-xs font-mono px-3 py-1.5 rounded-lg border border-white/10 text-gray-400" data-filter="维护">维护</button>
+                <button class="filter-btn text-xs font-mono px-3 py-1.5 rounded-lg border border-white/10 text-gray-400" data-filter="通知">通知</button>
+                <button class="filter-btn text-xs font-mono px-3 py-1.5 rounded-lg border border-white/10 text-gray-400" data-filter="紧急">紧急</button>
+                <div class="ml-auto text-xs text-gray-600 font-mono" id="notice-count"></div>
+            </div>
+
+            <!-- 公告列表 -->
+            <div id="notices-list">
+                <div class="flex items-center justify-center py-20 gap-3">
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="py-12 border-t border-white/5">
+        <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-xs font-mono text-gray-600">&copy; 2026 NOTION FILES MANAGEMENT. ALL RIGHTS RESERVED.</p>
+            <div class="flex items-center gap-6 text-xs text-gray-500">
+                <a href="/" class="hover:text-white transition-colors">主页</a>
+                <a href="/sponsor" class="hover:text-white transition-colors">赞助</a>
+                <a href="https://github.com/RuibinNingh/Notion-Files-Management" class="hover:text-white transition-colors">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // --- Markdown 渲染器 ---
+        function renderMarkdown(md) {
+            let html = md
+                // 粗体
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // 行内代码
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                // 链接
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+                // 引用块 (> text)
+                .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+                // 无序列表项
+                .replace(/^- (.+)$/gm, '<li>$1</li>');
+
+            // 把连续 <li> 包裹成 <ul>
+            html = html.replace(/((?:<li>.*?<\/li>\s*)+)/gs, '<ul>$1</ul>');
+
+            // 合并连续 <blockquote>
+            html = html.replace(/(<blockquote>.*?<\/blockquote>\s*)+/gs, (match) => {
+                const inner = match.replace(/<\/?blockquote>/g, '').trim();
+                return `<blockquote>${inner}</blockquote>`;
+            });
+
+            // 段落化
+            html = html.split('\n\n').map(p => {
+                p = p.trim();
+                if (!p) return '';
+                if (p.startsWith('<ul>') || p.startsWith('<blockquote>')) return p;
+                return `<p>${p}</p>`;
+            }).join('');
+
+            return html;
+        }
+
+        // --- 标签样式映射 ---
+        function getTagClass(tag) {
+            const known = ['更新', '维护', '通知', '紧急'];
+            return known.includes(tag) ? `notice-tag-${tag}` : 'notice-tag-default';
+        }
+
+        // --- 全局状态 ---
+        let allNotices = [];
+        let allContents = [];
+        let currentFilter = 'all';
+
+        // --- 渲染公告卡片 ---
+        function renderNotices(filter) {
+            const container = document.getElementById('notices-list');
+            const countEl = document.getElementById('notice-count');
+
+            const filtered = filter === 'all'
+                ? allNotices
+                : allNotices.filter(n => n.tags.includes(filter));
+
+            countEl.textContent = `${filtered.length} / ${allNotices.length} 条公告`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state text-center py-20">
+                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-4 text-gray-600"></i>
+                        <p class="text-gray-500 font-mono text-sm">暂无 "${filter}" 类型的公告</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = filtered.map((n) => {
+                const idx = allNotices.indexOf(n);
+                const content = allContents[idx] || '内容加载失败';
+                return `
+                    <div class="glass-card notice-card ${n.pinned ? 'pinned' : ''} p-8 mb-6" data-id="${n.id}">
+                        <div class="flex flex-wrap items-center gap-3 mb-5">
+                            ${n.pinned ? '<span class="notice-pin-badge">📌 置顶</span>' : ''}
+                            ${n.tags.map(t => `<span class="notice-tag ${getTagClass(t)}">${t}</span>`).join('')}
+                            <span class="text-xs text-gray-600 font-mono ml-auto flex items-center gap-1.5">
+                                <i data-lucide="calendar" class="w-3 h-3"></i>
+                                ${n.date}
+                            </span>
+                        </div>
+                        <h2 class="text-xl font-bold mb-5 text-white/95">${n.title}</h2>
+                        <div class="notice-content">${renderMarkdown(content)}</div>
+                        <div class="mt-5 pt-4 border-t border-white/5 flex items-center justify-between">
+                            <span class="text-xs text-gray-600 font-mono">ID: ${n.id}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+
+            // GSAP 入场动画
+            gsap.fromTo(
+                container.querySelectorAll('.notice-card'),
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }
+            );
+        }
+
+        // --- 筛选按钮事件 ---
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderNotices(currentFilter);
+            });
+        });
+
+        // --- 加载公告数据 ---
+        async function loadNotices() {
+            const container = document.getElementById('notices-list');
+            try {
+                const res = await fetch('./idx.json');
+                if (!res.ok) throw new Error('索引加载失败');
+                const idx = await res.json();
+                allNotices = idx.notices || [];
+
+                if (allNotices.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state text-center py-20">
+                            <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-4 text-gray-600"></i>
+                            <p class="text-gray-500 font-mono text-sm">暂无公告</p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    return;
+                }
+
+                // 排序：置顶优先，然后按 ID 降序（最新在前）
+                allNotices.sort((a, b) => {
+                    if (a.pinned && !b.pinned) return -1;
+                    if (!a.pinned && b.pinned) return 1;
+                    return b.id.localeCompare(a.id);
+                });
+
+                // 并行加载所有正文
+                allContents = await Promise.all(
+                    allNotices.map(n =>
+                        fetch(`./${n.id}.md`)
+                            .then(r => r.ok ? r.text() : '内容加载失败')
+                            .catch(() => '内容加载失败')
+                    )
+                );
+
+                renderNotices('all');
+
+            } catch (e) {
+                console.error('公告加载失败:', e);
+                container.innerHTML = `
+                    <div class="text-center py-20">
+                        <i data-lucide="alert-triangle" class="w-10 h-10 mx-auto mb-4 text-red-400/60"></i>
+                        <p class="text-gray-500 font-mono text-sm">公告加载失败，请稍后刷新重试</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        }
+
+        // --- 入场动画 & 初始化 ---
+        window.onload = () => {
+            gsap.to('#page-header', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
+            gsap.to('#filter-bar', { opacity: 1, y: 0, duration: 0.8, delay: 0.15, ease: 'power3.out' });
+            loadNotices();
+        };
+    </script>
+</body>
+</html>

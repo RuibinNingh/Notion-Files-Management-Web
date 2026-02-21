@@ -80,6 +80,24 @@
         .magnetic-btn { display: inline-block; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 
         .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, #3b82f6, #22d3ee); transform-origin: left; z-index: 9999; }
+
+        /* --- 公告系统样式 --- */
+        .notice-card { transition: border-color 0.3s, box-shadow 0.3s; }
+        .notice-card:hover { border-color: rgba(59,130,246,0.3); box-shadow: 0 0 30px rgba(59,130,246,0.08); }
+        .notice-card.pinned { border-left: 3px solid #3b82f6; }
+        .notice-tag { font-size: 0.7rem; padding: 2px 10px; border-radius: 99px; font-family: 'Fira Code', monospace; display: inline-block; }
+        .notice-tag-更新 { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+        .notice-tag-维护 { background: rgba(234,179,8,0.15); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
+        .notice-tag-通知 { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+        .notice-tag-紧急 { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .notice-tag-default { background: rgba(156,163,175,0.15); color: #9ca3af; border: 1px solid rgba(156,163,175,0.3); }
+        .notice-content { font-size: 0.9rem; line-height: 1.75; color: #9ca3af; }
+        .notice-content strong { color: #e5e7eb; }
+        .notice-content a { color: #60a5fa; text-decoration: underline; text-underline-offset: 2px; }
+        .notice-content a:hover { color: #93c5fd; }
+        .notice-content ul { list-style: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
+        .notice-content li { margin-bottom: 0.25rem; }
+        .notice-pin-badge { font-size: 0.65rem; background: rgba(59,130,246,0.2); color: #60a5fa; padding: 1px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; }
     </style>
 </head>
 <body>
@@ -113,6 +131,7 @@
                 <span class="font-bold tracking-tight hidden md:block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Notion Files Management</span>
             </div>
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
+                <a href="#notices" class="hover:text-white transition-colors">公告</a>
                 <a href="#features" class="hover:text-white transition-colors">功能特性</a>
                 <a href="#architecture" class="hover:text-white transition-colors">技术架构</a>
                 <a href="/sponsor" class="flex items-center gap-1.5 bg-gradient-to-r from-pink-500 to-rose-400 bg-clip-text text-transparent transition-all">
@@ -159,6 +178,21 @@
                     <span class="font-mono text-xs text-blue-300">STATUS: READY</span>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- 公告系统 -->
+    <section id="notices" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+        <div class="flex items-center justify-between mb-16">
+            <h2 class="section-title text-4xl font-black flex items-center gap-4 italic opacity-0 translate-y-10">
+                <span class="text-blue-500">#</span> NOTICES <span class="text-gray-600 text-lg not-italic font-mono">// 公告</span>
+            </h2>
+            <a href="/notices/" class="text-sm text-gray-400 hover:text-blue-400 transition-colors flex items-center gap-1.5 font-mono">
+                查看全部 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+        <div id="notices-container" class="space-y-6">
+            <div class="text-center text-gray-500 py-10 font-mono text-sm">Loading notices...</div>
         </div>
     </section>
 
@@ -748,6 +782,92 @@
                 gsap.to(btn, { x: 0, y: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" });
             });
         });
+        // === 公告系统 ===
+        function getTagClass(tag) {
+            const known = ['更新', '维护', '通知', '紧急'];
+            return known.includes(tag) ? `notice-tag-${tag}` : 'notice-tag-default';
+        }
+
+        function renderMarkdown(md) {
+            // Simple markdown renderer for notice content
+            let html = md
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+                .replace(/^- (.+)$/gm, '<li>$1</li>');
+            // Wrap consecutive <li> in <ul>
+            html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+            // Paragraphs
+            html = html.split('\n\n').map(p => {
+                p = p.trim();
+                if (!p || p.startsWith('<ul>')) return p;
+                return `<p>${p}</p>`;
+            }).join('');
+            return html;
+        }
+
+        async function loadNotices() {
+            const container = document.getElementById('notices-container');
+            try {
+                const idxRes = await fetch('./notices/idx.json');
+                if (!idxRes.ok) throw new Error('Failed to fetch idx.json');
+                const idx = await idxRes.json();
+                const notices = idx.notices || [];
+
+                if (notices.length === 0) {
+                    container.innerHTML = '<div class="text-center text-gray-500 py-10 font-mono text-sm">暂无公告</div>';
+                    return;
+                }
+
+                // Sort: pinned first, then by date desc
+                notices.sort((a, b) => {
+                    if (a.pinned && !b.pinned) return -1;
+                    if (!a.pinned && b.pinned) return 1;
+                    return b.id.localeCompare(a.id);
+                });
+
+                // Fetch all notice contents in parallel
+                const contents = await Promise.all(
+                    notices.map(n =>
+                        fetch(`./notices/${n.id}.md`)
+                            .then(r => r.ok ? r.text() : '内容加载失败')
+                            .catch(() => '内容加载失败')
+                    )
+                );
+
+                container.innerHTML = notices.map((n, i) => `
+                    <div class="glass-card notice-card ${n.pinned ? 'pinned' : ''} p-8 scroll-item opacity-0 translate-y-20">
+                        <div class="flex flex-wrap items-center gap-3 mb-4">
+                            ${n.pinned ? '<span class="notice-pin-badge">📌 置顶</span>' : ''}
+                            ${n.tags.map(t => `<span class="notice-tag ${getTagClass(t)}">${t}</span>`).join('')}
+                            <span class="text-xs text-gray-500 font-mono ml-auto">${n.date}</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4">${n.title}</h3>
+                        <div class="notice-content">${renderMarkdown(contents[i])}</div>
+                    </div>
+                `).join('');
+
+                // Re-apply GSAP scroll animations to new notice cards
+                container.querySelectorAll('.scroll-item').forEach(item => {
+                    gsap.fromTo(item,
+                        { opacity: 0, y: 50 },
+                        {
+                            scrollTrigger: {
+                                trigger: item,
+                                start: "top bottom-=100",
+                                toggleActions: "play none none reverse"
+                            },
+                            opacity: 1, y: 0, duration: 1, ease: "power3.out"
+                        }
+                    );
+                });
+
+            } catch (e) {
+                console.error('公告加载失败:', e);
+                container.innerHTML = '<div class="text-center text-gray-500 py-10 font-mono text-sm">公告加载失败</div>';
+            }
+        }
+
+        loadNotices();
     </script>
 </body>
 </html>
