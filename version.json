@@ -1,5 +1,5 @@
 {
-  "version": "1.5.0-Beta",
+  "version": "1.5.0-Status",
   "build_date": "2026-02-21",
   "github": "RuibinNingh/Notion-Files-Management",
   "download": {
@@ -12,24 +12,27 @@
         "id": "main",
         "label": "主线路",
         "url": "https://nfm.ruibin-ningh.top/download/Notion-Files-Management.exe",
-        "priority": 1
+        "priority": 1,
+        "type": "exe"
       },
       {
         "id": "github",
         "label": "GitHub Release",
         "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.5.0/Notion-Files-Management.exe",
-        "priority": 2
+        "priority": 2,
+        "type": "exe"
       }
     ]
   },
   "changelog": [
-    "新增公告中心:左侧导航栏新增「公告」页面,从远端拉取公告索引与 Markdown 正文,卡片流式布局内联渲染,支持置顶、标签色块、日期排序",
-    "公告本地缓存与已读管理:成功拉取后写入本地缓存,网络不可用时自动回退;进入公告页即标记全部已读",
-    "主页公告未读提醒横幅:检测到未读公告时主页顶部弹出液态玻璃风格横幅,显示未读条数,点击「查看公告」一键跳转",
-    "公告服务端热更新:只需在服务端推送新的 idx.json + md 文件,客户端无需发版即可展示新公告",
-    "Bug 修复:设置页自动更新进度条跨页面切换后消失 — 新增 AutoUpdateSession 单例会话持久化下载状态,页面加载时从 Session 恢复进度并轮询同步 UI",
-    "Bug 修复:主页提醒横幅布局异常 — 版本更新横幅与公告横幅改为 StackPanel 自动堆叠,解决单个横幅隐藏时另一个悬浮在页面中间的问题",
-    "Bug 修复:公告页 Markdown 链接不可点击 — 注册 Hyperlink.RequestNavigateEvent 处理器,捕获链接点击并通过 Process.Start 打开浏览器",
-    "新增 MdXaml 1.27.0 NuGet 依赖,用于 Markdown 转 FlowDocument 渲染公告正文"
+    "新增自动推送背景:背景材质新增「自动推送图片」选项,自动从服务端拉取预设背景配置,支持切换预设(带缩略图预览)和透明度调节,三层缓存机制优化加载性能",
+    "新增公告中心:左侧导航栏新增「公告」页面,从远端拉取公告索引与 Markdown 正文,卡片流式布局内联渲染,支持置顶、标签色块、日期排序,本地缓存与已读管理",
+    "新增清除一切缓存:工具箱新增递归清除所有本地数据(配置、公告缓存、背景缓存、日志)的功能,带危险操作二次确认",
+    "新增自动更新系统:启动时静默检查新版本,设置页提供自动更新下载(多线路优先级fallback)、手动下载入口,支持裸 exe 自替换",
+    "新增数据源迁移:按属性映射将源数据源页面的属性值批量同步到目标数据源,支持多线程并发",
+    "新增批量去除后缀:工具箱支持批量去除数据库页面标题后缀,多线程并发,实时进度显示",
+    "新增页面大小自动更新:扫描数据源页面所有文件块,HTTP HEAD 获取文件大小累加后自动写入指定数字属性",
+    "全媒体类型支持:下载/上传扩展至 file/image/pdf/audio/video 5 种媒体块,上传自动检测文件类型使用原生块挂载",
+    "UI 统一优化:背景不透明度语义统一,任务卡片全宽纵向重构,设置页响应式布局,保存配置内嵌式提示"
   ]
 }

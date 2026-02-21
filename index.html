@@ -209,22 +209,21 @@
                     <div class="w-14 h-14 bg-blue-600/20 rounded-xl flex items-center justify-center">
                         <i data-lucide="download-cloud" class="text-blue-400 w-8 h-8"></i>
                     </div>
-
                 </div>
                 <h3 class="text-2xl font-black mb-4 relative">批量下载引擎</h3>
-                <p class="text-gray-400 leading-relaxed mb-6 relative">智能探测文件大小，支持多线程并发下载。实时进度追踪，ETA 估算，断点续传支持。</p>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">智能探测文件大小，支持多线程并发下载。覆盖全部 Notion 媒体类型，链接过期自动刷新。</p>
                 <ul class="space-y-3 relative">
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">HEAD 请求预探测文件大小，精确显示下载量</span>
+                        <span class="text-sm text-gray-300">支持 file / image / pdf / audio / video 五种媒体块 + 页面 icon/cover + 数据库 files 属性</span>
                     </li>
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">可配置并发数（默认 3 线程），优化网络利用率</span>
+                        <span class="text-sm text-gray-300">HEAD + Range GET 双策略探测文件大小，精确显示下载量</span>
                     </li>
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">实时速度监控与 EMA 平滑，剩余时间智能预测</span>
+                        <span class="text-sm text-gray-300">下载链接过期自动刷新（HTTP 401/403/410 检测），实时速度与 ETA 预测</span>
                     </li>
                 </ul>
             </div>
@@ -235,18 +234,17 @@
                     <div class="w-14 h-14 bg-purple-600/20 rounded-xl flex items-center justify-center">
                         <i data-lucide="upload-cloud" class="text-purple-400 w-8 h-8"></i>
                     </div>
-
                 </div>
-                <h3 class="text-2xl font-black mb-4 relative">分片上传系统</h3>
-                <p class="text-gray-400 leading-relaxed mb-6 relative">15MB 分片策略，智能限流，队列管理。支持大文件上传，实时进度反馈。</p>
+                <h3 class="text-2xl font-black mb-4 relative">智能上传系统</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">自动检测文件类型，使用原生块挂载。队列管理，实时进度反馈。</p>
                 <ul class="space-y-3 relative">
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-purple-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">15MB 自动分片，突破单文件大小限制</span>
+                        <span class="text-sm text-gray-300">自动识别文件类型：图片→image 块、视频→video 块、音频→audio 块、PDF→pdf 块</span>
                     </li>
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-purple-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">队列化管理，支持多文件批量上传</span>
+                        <span class="text-sm text-gray-300">队列化批量上传，跨页面切换任务状态不丢失</span>
                     </li>
                 </ul>
             </div>
@@ -259,161 +257,91 @@
                     </div>
                 </div>
                 <h3 class="text-2xl font-black mb-4 relative">工具箱聚合</h3>
-                <p class="text-gray-400 leading-relaxed mb-6 relative">页面文件信息统计，快速查看文件分布、总大小、类型分析。</p>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">丰富的 Notion 批量操作工具集，覆盖页面信息查询、数据迁移、批量编辑等场景。</p>
                 <ul class="space-y-3 relative">
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-cyan-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">一键获取页面文件清单</span>
+                        <span class="text-sm text-gray-300">页面大小自动更新/查询：扫描文件块累加大小，自动写入数字属性</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-cyan-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">数据源迁移：按属性映射批量同步属性值到另一数据库，多线程并发</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-cyan-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">批量去除页面标题后缀、查看应用日志、清除一切缓存</span>
                     </li>
                 </ul>
             </div>
 
-            <div class="md:col-span-7 glass-card p-10 group hover:border-orange-500/40 transition-all relative overflow-hidden scroll-item opacity-0 translate-y-20 feature-card">
+            <div class="md:col-span-7 glass-card p-10 group hover:border-green-500/40 transition-all relative overflow-hidden scroll-item opacity-0 translate-y-20 feature-card">
+                <div class="absolute inset-0 bg-gradient-to-br from-green-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="flex justify-between mb-10 relative">
+                    <div class="w-14 h-14 bg-green-600/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="megaphone" class="text-green-400 w-8 h-8"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-black mb-4 relative">公告系统</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">从远端拉取公告索引与 Markdown 正文，卡片流式布局内联渲染，本地缓存与离线回退。</p>
+                <ul class="space-y-3 relative">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-green-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">MdXaml 渲染 Markdown 正文，支持置顶、标签色块、日期排序</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-green-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">已读管理 + 主页未读提醒横幅，服务端热更新无需发版</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-7 glass-card p-10 group hover:border-rose-500/40 transition-all relative overflow-hidden scroll-item opacity-0 translate-y-20 feature-card">
+                <div class="absolute inset-0 bg-gradient-to-br from-rose-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="flex justify-between mb-10 relative">
+                    <div class="w-14 h-14 bg-rose-600/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="palette" class="text-rose-400 w-8 h-8"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-black mb-4 relative">个性化外观</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">主题色与背景材质深度自定义，打造专属工作空间。</p>
+                <ul class="space-y-3 relative">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-rose-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">主题色设置：HSV / RGB 颜色空间选择，预设颜色快速切换</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-rose-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-gray-300">背景材质：自动推送服务端预设图片/视频、云母、亚克力、自定义图片/视频（含模糊度与不透明度调节）</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-5 glass-card p-10 group hover:border-orange-500/40 transition-all relative overflow-hidden scroll-item opacity-0 translate-y-20 feature-card">
                 <div class="absolute inset-0 bg-gradient-to-br from-orange-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div class="flex justify-between mb-10 relative">
                     <div class="w-14 h-14 bg-orange-600/20 rounded-xl flex items-center justify-center">
-                        <i data-lucide="settings" class="text-orange-400 w-8 h-8"></i>
+                        <i data-lucide="refresh-cw" class="text-orange-400 w-8 h-8"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-black mb-4 relative">灵活配置管理</h3>
-                <p class="text-gray-400 leading-relaxed mb-6 relative">可视化设置界面，支持 Notion Token、API 地址、并发数等参数配置。配置持久化存储。</p>
+                <h3 class="text-2xl font-black mb-4 relative">自动更新 & 配置</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">启动时静默检查新版本，一键自动更新。配置持久化，跨版本无缝迁移。</p>
                 <ul class="space-y-3 relative">
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-orange-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">配置文件保存在 %AppData%，跨版本迁移无缝</span>
+                        <span class="text-sm text-gray-300">多线路优先级 fallback 自动下载更新，支持裸 exe 自替换</span>
                     </li>
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-orange-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">应用设置后自动重置任务状态，确保配置生效</span>
+                        <span class="text-sm text-gray-300">Notion Token、API 地址、并发数等参数可视化配置，配置保存在 %AppData%</span>
                     </li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <section id="workflow" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
-        <h2 class="section-title text-4xl font-black mb-16 flex items-center gap-4 italic opacity-0 translate-y-10">
-            <span class="text-blue-500">#</span> WORKFLOW <span class="text-gray-600 text-lg not-italic font-mono">// 使用流程</span>
-        </h2>
 
-        <div class="mb-20 scroll-item opacity-0 translate-y-20">
-            <h3 class="text-2xl font-bold mb-8 flex items-center gap-3">
-                <i data-lucide="download" class="text-blue-400"></i>
-                批量下载流程
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-card p-6 feature-card">
-                    <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mb-4">
-                        <span class="text-2xl font-black text-blue-400">1</span>
-                    </div>
-                    <h4 class="font-bold mb-3">输入页面 ID</h4>
-                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
-                        <img src="screenshot/下载页面-提示输入页面ID窗口.png" alt="输入页面ID" class="w-full h-auto">
-                    </div>
-                    <p class="text-sm text-gray-400">在下载页面输入 Notion 页面 ID，点击"获取列表"</p>
-                </div>
 
-                <div class="glass-card p-6 feature-card">
-                    <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mb-4">
-                        <span class="text-2xl font-black text-blue-400">2</span>
-                    </div>
-                    <h4 class="font-bold mb-3">选择下载项</h4>
-                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
-                        <img src="screenshot/下载页面-提示选择下载项.png" alt="选择下载项" class="w-full h-auto">
-                    </div>
-                    <p class="text-sm text-gray-400">系统自动探测文件大小，选择需要下载的文件</p>
-                </div>
 
-                <div class="glass-card p-6 feature-card">
-                    <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mb-4">
-                        <span class="text-2xl font-black text-blue-400">3</span>
-                    </div>
-                    <h4 class="font-bold mb-3">监控下载进度</h4>
-                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
-                        <img src="screenshot/下载页面-成功下载后的下载列表截图.png" alt="下载进度" class="w-full h-auto">
-                    </div>
-                    <p class="text-sm text-gray-400">实时查看下载速度、进度和 ETA</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="scroll-item opacity-0 translate-y-20">
-            <h3 class="text-2xl font-bold mb-8 flex items-center gap-3">
-                <i data-lucide="upload" class="text-purple-400"></i>
-                批量上传流程
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-card p-6 feature-card">
-                    <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center mb-4">
-                        <span class="text-2xl font-black text-purple-400">1</span>
-                    </div>
-                    <h4 class="font-bold mb-3">选择文件并填写页面 ID</h4>
-                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
-                        <img src="screenshot/上传页面-选择上传文件和填写上传页面id截图.png" alt="选择上传文件" class="w-full h-auto">
-                    </div>
-                    <p class="text-sm text-gray-400">选择本地文件，输入目标 Notion 页面 ID</p>
-                </div>
-
-                <div class="glass-card p-6 feature-card">
-                    <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center mb-4">
-                        <span class="text-2xl font-black text-purple-400">2</span>
-                    </div>
-                    <h4 class="font-bold mb-3">监控上传进度</h4>
-                    <div class="rounded-lg overflow-hidden border border-white/10 mb-3">
-                        <img src="screenshot/上传页面-提交上传文件后上传进度截图.png" alt="上传进度" class="w-full h-auto">
-                    </div>
-                    <p class="text-sm text-gray-400">实时查看上传速度、分片进度和状态</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-32 px-6 max-w-7xl mx-auto relative z-10">
-        <h2 class="section-title text-4xl font-black mb-16 flex items-center gap-4 italic opacity-0 translate-y-10">
-            <span class="text-blue-500">#</span> UI SHOWCASE <span class="text-gray-600 text-lg not-italic font-mono">// 界面展示</span>
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="glass-card p-6 scroll-item opacity-0 translate-y-20 feature-card">
-                <h4 class="font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="file-down" class="text-blue-400"></i>
-                    下载页面
-                </h4>
-                <div class="rounded-lg overflow-hidden border border-white/10">
-                    <img src="screenshot/文件下载页面.png" alt="下载页面" class="w-full h-auto">
-                </div>
-            </div>
-
-            <div class="glass-card p-6 scroll-item opacity-0 translate-y-20 feature-card">
-                <h4 class="font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="file-up" class="text-purple-400"></i>
-                    上传页面
-                </h4>
-                <div class="rounded-lg overflow-hidden border border-white/10">
-                    <img src="screenshot/文件上传页面.png" alt="上传页面" class="w-full h-auto">
-                </div>
-            </div>
-
-            <div class="glass-card p-6 scroll-item opacity-0 translate-y-20 feature-card">
-                <h4 class="font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="wrench" class="text-cyan-400"></i>
-                    工具箱页面
-                </h4>
-                <div class="rounded-lg overflow-hidden border border-white/10">
-                    <img src="screenshot/工具箱页面.png" alt="工具箱页面" class="w-full h-auto">
-                </div>
-            </div>
-
-            <div class="glass-card p-6 scroll-item opacity-0 translate-y-20 feature-card">
-                <h4 class="font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="settings" class="text-orange-400"></i>
-                    设置页面
-                </h4>
-                <div class="rounded-lg overflow-hidden border border-white/10">
-                    <img src="screenshot/设置页面.png" alt="设置页面" class="w-full h-auto">
-                </div>
-            </div>
-        </div>
-    </section>
 
     <section id="architecture" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
         <h2 class="section-title text-4xl font-black mb-16 flex items-center gap-4 italic opacity-0 translate-y-10">
@@ -591,6 +519,12 @@
                             <td class="py-4 text-gray-400">内嵌 Python 环境</td>
                         </tr>
                         <tr>
+                            <td class="py-4 font-mono text-xs text-blue-300">Markdown 渲染</td>
+                            <td class="py-4">MdXaml</td>
+                            <td class="py-4 font-mono">1.27.0</td>
+                            <td class="py-4 text-gray-400">公告系统 Markdown 转 FlowDocument</td>
+                        </tr>
+                        <tr>
                             <td class="py-4 font-mono text-xs text-blue-300">后端逻辑</td>
                             <td class="py-4">Python Scripts</td>
                             <td class="py-4 font-mono">3.11+</td>
@@ -689,7 +623,7 @@
             }, 30);
         }
 
-        const typeText = "批量下载、分片上传、工具箱聚合 —— WPF + Python 强力驱动。_";
+        const typeText = "批量下载、智能上传、工具箱、公告系统、个性化外观 —— WPF + Python 强力驱动。_";
         let typeIndex = 0;
         const typeTarget = document.getElementById("typewriter");
         function typeWriter() {
