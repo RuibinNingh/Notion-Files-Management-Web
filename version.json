@@ -1,5 +1,5 @@
 {
-  "version": "1.4.6-Beta",
+  "version": "1.5.0-Beta",
   "build_date": "2026-02-21",
   "github": "RuibinNingh/Notion-Files-Management",
   "download": {
@@ -17,21 +17,19 @@
       {
         "id": "github",
         "label": "GitHub Release",
-        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.4.6/Notion-Files-Management.exe",
+        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.5.0/Notion-Files-Management.exe",
         "priority": 2
       }
     ]
   },
   "changelog": [
-    "全媒体类型下载:下载范围从仅 file 块扩展至 image、pdf、audio、video 共 5 种 Notion 媒体块,并支持页面图标、封面及 files 属性附件提取",
-    "原生块类型上传:上传时自动检测文件类型,图片挂载为 image 块(可预览)、视频为 video 块(可播放)、音频为 audio 块、PDF 为 pdf 块,其他保持 file 块",
-    "自动更新功能:启动时后台静默检查版本,设置页新增自动更新按钮,支持多线路优先级下载(installer 安装包 + exe 裸文件自替换两种模式)",
-    "主页版本提醒横幅:检测到新版本时主页顶部弹出液态玻璃风格横幅,支持一键跳转设置页更新",
-    "下载/上传页面卡片化重构:任务列表从三列横排改为全宽纵向卡片堆叠,进度条升级为 8px 全宽,新增状态色彩联动(蓝色进行中/绿色完成/红色失败/灰色等待)",
-    "设置页面整合:分散的保存/重启按钮合并为统一「应用配置」模块,所有反馈统一为内嵌式 InfoBar 替代系统弹窗",
-    "Bug 修复:页面大小更新结果全部为 0 GB — 引入 HEAD + Range GET 双策略探测,修复 Notion(S3)不返回 Content-Length 的问题",
-    "背景材质选项重命名为「视频或图片」,选择时显示功耗警告提示",
-    "URL 刷新与页面大小统计同步支持所有媒体块类型",
-    "版本号从 v1.4.0-Status 跳至 v1.4.6-Beta(v1.4.1~v1.4.5 为同日密集迭代)"
+    "新增公告中心:左侧导航栏新增「公告」页面,从远端拉取公告索引与 Markdown 正文,卡片流式布局内联渲染,支持置顶、标签色块、日期排序",
+    "公告本地缓存与已读管理:成功拉取后写入本地缓存,网络不可用时自动回退;进入公告页即标记全部已读",
+    "主页公告未读提醒横幅:检测到未读公告时主页顶部弹出液态玻璃风格横幅,显示未读条数,点击「查看公告」一键跳转",
+    "公告服务端热更新:只需在服务端推送新的 idx.json + md 文件,客户端无需发版即可展示新公告",
+    "Bug 修复:设置页自动更新进度条跨页面切换后消失 — 新增 AutoUpdateSession 单例会话持久化下载状态,页面加载时从 Session 恢复进度并轮询同步 UI",
+    "Bug 修复:主页提醒横幅布局异常 — 版本更新横幅与公告横幅改为 StackPanel 自动堆叠,解决单个横幅隐藏时另一个悬浮在页面中间的问题",
+    "Bug 修复:公告页 Markdown 链接不可点击 — 注册 Hyperlink.RequestNavigateEvent 处理器,捕获链接点击并通过 Process.Start 打开浏览器",
+    "新增 MdXaml 1.27.0 NuGet 依赖,用于 Markdown 转 FlowDocument 渲染公告正文"
   ]
 }

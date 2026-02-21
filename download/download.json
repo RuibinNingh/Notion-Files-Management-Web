@@ -1,5 +1,5 @@
 {
-  "version": "1.4.6-Beta",
+  "version": "1.5.0-Beta",
   "build_date": "2026-02-21",
   "filename": "Notion-Files-Management.exe",
   "filesize": "约 89 MB",
@@ -17,7 +17,7 @@
       "id": "github",
       "label": "GitHub Release",
       "description": "全球 CDN，稳定可靠",
-      "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.4.6/Notion-Files-Management.exe",
+      "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.5.0/Notion-Files-Management.exe",
       "icon": "github",
       "color": "purple",
       "tip": "GitHub 在国内访问可能较慢，建议优先使用蓝奏云线路。确定继续吗？"
