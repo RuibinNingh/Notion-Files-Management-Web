@@ -1,0 +1,35 @@
+{
+  "version": "1.4.5-Status",
+  "build_date": "2026-02-21",
+  "filename": "NFM-1.4.5-Status.exe",
+  "filesize": "约 89 MB",
+  "lines": [
+    {
+      "id": "lanzou",
+      "label": "蓝奏云网盘",
+      "description": "国内高速下载，无需登录",
+      "url": "https://wwavl.lanzouu.com/b00tcb1d9c",
+      "icon": "cloud",
+      "color": "blue",
+      "tip": ""
+    },
+    {
+      "id": "github",
+      "label": "GitHub Release",
+      "description": "全球 CDN，稳定可靠",
+      "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.4.5/NFM-1.4.5-Status.exe",
+      "icon": "github",
+      "color": "purple",
+      "tip": "GitHub 在国内访问可能较慢，建议优先使用蓝奏云线路。确定继续吗？"
+    },
+    {
+      "id": "mirror-cn",
+      "label": "备用镜像",
+      "description": "国内备用节点",
+      "url": "https://cn-mirror.ruibin-ningh.top/releases/NFM-1.4.5-Status.exe",
+      "icon": "server",
+      "color": "cyan",
+      "tip": ""
+    }
+  ]
+}

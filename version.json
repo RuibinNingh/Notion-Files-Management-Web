@@ -1,8 +1,27 @@
 {
-  "version": "1.4.0-Status",
+  "version": "1.4.5-Status",
   "build_date": "2026-02-19",
-  "download_url": "https://wwavl.lanzouu.com/b00tcb1d9c",
   "github": "RuibinNingh/Notion-Files-Management",
+  "download": {
+    "manual": {
+      "url": "https://nfm.ruibin-ningh.top/download",
+      "label": "官网下载页"
+    },
+    "auto": [
+      {
+        "id": "main",
+        "label": "主线路",
+        "url": "https://nfm.ruibin-ningh.top/download/",
+        "priority": 1
+      },
+      {
+        "id": "github",
+        "label": "GitHub Release",
+        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.4.0/NFM-1.4.0-Status.exe",
+        "priority": 2
+      }
+    ]
+  },
   "changelog": [
     "功能升级 - Notion 页面大小自动更新/查询:工具箱「Notion 页面信息」升级为「Notion 页面大小自动更新/查询」",
     "新增「自动更新」模式:扫描数据源中选定页面的所有文件块,通过 HTTP HEAD 请求获取文件实际大小,累加后自动写入用户指定的数字属性",
@@ -13,7 +32,6 @@
     "响应式弹窗设计:页面选择弹窗通过 ResponsiveClampConverter 自适应窗口尺寸,确保按钮始终可见",
     "Python 后端:新增 page_size_update.py 模块(PageSizeUpdateTask 类 + scan_pages_for_size_property 函数),main.py 新增 4 个入口方法",
     "C# 前端:NotionBackendService 新增 4 个门面方法和 3 个记录类型,ToolsPage 新增 4 个模态卡片及约 350 行事件处理代码",
-    "原有「查询单个页面」功能完全保留,通过选择对话框分流",
-    "蓝奏云密码:NFM"
+    "原有「查询单个页面」功能完全保留,通过选择对话框分流"
   ]
 }

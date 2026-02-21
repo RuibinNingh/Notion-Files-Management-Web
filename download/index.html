@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="bg-[#050509] text-white selection:bg-blue-500/30">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下载 | Notion Files Management</title>
+    <link rel="icon" type="image/png" href="../icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --accent: #3b82f6; --bg: #050509; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); overflow-x: hidden; }
+        .glass-nav { background: rgba(5, 5, 9, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-card { background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); box-shadow: 0 20px 40px -20px rgba(0,0,0,0.8); }
+
+        /* 下载线路卡片 */
+        .line-card {
+            position: relative; overflow: hidden; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .line-card:hover { border-color: rgba(59,130,246,0.4); transform: translateY(-4px); }
+        .line-card:hover .line-glow { opacity: 1; }
+        .line-card:active { transform: translateY(-2px) scale(0.99); }
+        .line-glow {
+            position: absolute; inset: 0; opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        /* 颜色方案 */
+        .line-card[data-color="blue"]:hover  { border-color: rgba(59,130,246,0.4); }
+        .line-card[data-color="purple"]:hover { border-color: rgba(168,85,247,0.4); }
+        .line-card[data-color="cyan"]:hover   { border-color: rgba(34,211,238,0.4); }
+        .line-card[data-color="green"]:hover  { border-color: rgba(34,197,94,0.4); }
+        .line-card[data-color="orange"]:hover { border-color: rgba(249,115,22,0.4); }
+        .line-card[data-color="pink"]:hover   { border-color: rgba(236,72,153,0.4); }
+
+        /* 确认弹窗 */
+        .modal-backdrop {
+            position: fixed; inset: 0; z-index: 100;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+        .modal-box {
+            max-width: 460px; width: 90%;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-backdrop.active .modal-box { transform: translateY(0) scale(1); }
+
+        /* 漂浮粒子 */
+        .particle { position: absolute; border-radius: 50%; opacity: 0.3; pointer-events: none; animation: float 20s infinite linear; }
+        .particle:nth-child(1) { width: 4px; height: 4px; background: #3b82f6; top: 20%; left: 10%; animation-duration: 25s; }
+        .particle:nth-child(2) { width: 6px; height: 6px; background: #22d3ee; top: 60%; left: 80%; animation-duration: 30s; animation-delay: -5s; }
+        .particle:nth-child(3) { width: 3px; height: 3px; background: #a855f7; top: 80%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; background: #3b82f6; top: 10%; left: 70%; animation-duration: 28s; animation-delay: -2s; }
+        @keyframes float { 
+            0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.1; } 
+            50%  { transform: translateY(-100px) translateX(50px) rotate(180deg); opacity: 0.5; } 
+            100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0.1; } 
+        }
+
+        .code-flow { position: absolute; width: 2px; height: 100px; background: linear-gradient(transparent, #3b82f6, transparent); animation: flow 3s linear infinite; opacity: 0.3; }
+        @keyframes flow { 0% { top: -100px; } 100% { top: 100%; } }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, #fff, #3b82f6, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+        @keyframes shimmer { to { background-position: 200% center; } }
+
+        .pulse-ring { position: absolute; border: 2px solid rgba(59,130,246,0.5); border-radius: 50%; animation: pulse-expand 2s ease-out infinite; }
+        @keyframes pulse-expand { 0% { width: 30px; height: 30px; opacity: 1; } 100% { width: 80px; height: 80px; opacity: 0; } }
+
+        /* 加载骨架屏 */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.5s infinite;
+            border-radius: 0.75rem;
+        }
+        @keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050509; }
+        ::-webkit-scrollbar-thumb { background: #1e1e2e; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+    </style>
+</head>
+<body>
+    <!-- 背景粒子 -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div>
+        <div class="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-blue-700/10 blur-[150px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-[-20%] right-[-20%] w-[50%] h-[50%] bg-purple-600/10 blur-[130px] rounded-full animate-pulse" style="animation-delay: 2s;"></div>
+        <div class="code-flow" style="left: 15%; animation-delay: 0s;"></div>
+        <div class="code-flow" style="left: 55%; animation-delay: 1.5s;"></div>
+        <div class="code-flow" style="left: 85%; animation-delay: 2.8s;"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-8 h-8 rounded-lg overflow-hidden border border-white/10 group-hover:border-blue-500/50 transition-all">
+                    <img src="../icon.png" alt="Logo" class="w-full h-full object-cover" />
+                </div>
+                <span class="font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">返回主页</span>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/RuibinNingh/Notion-Files-Management" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <main class="pt-40 pb-20 px-6">
+        <div class="max-w-3xl mx-auto">
+            <!-- 头部 -->
+            <div id="dl-header" class="text-center opacity-0 translate-y-10 mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm mb-6">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Download</span>
+                </div>
+                <h1 class="text-5xl md:text-6xl font-black mb-6 italic tracking-tighter">
+                    获取 <span class="shimmer-text">NFM</span>
+                </h1>
+                <p id="dl-meta" class="text-gray-400 text-lg leading-relaxed">
+                    加载中...
+                </p>
+            </div>
+
+            <!-- 版本信息卡片 -->
+            <div id="dl-version-card" class="glass-card p-6 rounded-2xl mb-10 opacity-0 translate-y-10">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <div class="pulse-ring absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                            <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 relative">
+                                <img src="../icon.png" alt="Logo" class="w-10 h-10 object-cover rounded-lg" />
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-bold text-lg" id="dl-version-label">Notion Files Management</div>
+                            <div class="flex items-center gap-3 mt-1">
+                                <span id="dl-version-tag" class="font-mono text-xs px-2 py-0.5 rounded bg-blue-500/15 border border-blue-500/30 text-blue-300">--</span>
+                                <span id="dl-build-date" class="text-xs text-gray-500 font-mono">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dl-filesize" class="text-sm text-gray-400 font-mono flex items-center gap-2">
+                        <i data-lucide="hard-drive" class="w-4 h-4"></i>
+                        <span>--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 下载线路区 -->
+            <div id="dl-lines-title" class="opacity-0 translate-y-10 mb-6">
+                <h2 class="text-2xl font-black flex items-center gap-3 italic">
+                    <span class="text-blue-500">#</span> DOWNLOAD LINES
+                    <span class="text-gray-600 text-sm not-italic font-mono">// 选择下载线路</span>
+                </h2>
+            </div>
+
+            <!-- 线路列表 (动态渲染) -->
+            <div id="dl-lines-container" class="space-y-4 mb-16">
+                <!-- 骨架屏占位 -->
+                <div class="skeleton h-24"></div>
+                <div class="skeleton h-24"></div>
+                <div class="skeleton h-24"></div>
+            </div>
+
+            <!-- 加载失败提示 (默认隐藏) -->
+            <div id="dl-error" class="hidden glass-card p-10 rounded-2xl text-center">
+                <div class="w-16 h-16 bg-red-500/20 rounded-xl flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="alert-triangle" class="text-red-400 w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">加载配置失败</h3>
+                <p class="text-gray-400 text-sm mb-6">无法读取下载线路配置，请刷新重试或前往 GitHub 下载。</p>
+                <a href="https://github.com/RuibinNingh/Notion-Files-Management/releases" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-6 py-3 rounded-xl text-sm font-bold transition-all">
+                    <i data-lucide="github" class="w-4 h-4"></i> 前往 GitHub Releases
+                </a>
+            </div>
+
+            <!-- 系统要求 -->
+            <div id="dl-requirements" class="glass-card p-8 rounded-2xl opacity-0 translate-y-10">
+                <h3 class="font-bold text-lg mb-6 flex items-center gap-2">
+                    <i data-lucide="monitor" class="text-blue-400 w-5 h-5"></i>
+                    系统要求
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">操作系统</div>
+                            <div class="text-gray-400">Windows 10/11 x64</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">运行环境</div>
+                            <div class="text-gray-400">.NET 8.0 Desktop Runtime(可选)</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">Python</div>
+                            <div class="text-gray-400">无需安装，程序内嵌 3.11</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-white mb-1">Notion</div>
+                            <div class="text-gray-400">需要 Notion Integration Token</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部 -->
+    <footer class="py-12 text-center font-mono text-xs text-gray-600">
+        <p>&copy; 2026 NOTION FILES MANAGEMENT PROJECT. BY <a href="https://github.com/RuibinNingh" class="hover:text-blue-400 transition-colors">RuibinNingh</a></p>
+    </footer>
+
+    <!-- 确认弹窗 -->
+    <div id="modal" class="modal-backdrop" onclick="closeModal(event)">
+        <div class="modal-box glass-card p-8 rounded-2xl relative" onclick="event.stopPropagation()">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-t-2xl"></div>
+            <div class="flex items-start gap-4 mb-6">
+                <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="alert-circle" class="text-yellow-400 w-6 h-6"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-2">提示</h3>
+                    <p id="modal-tip" class="text-gray-400 text-sm leading-relaxed"></p>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                    取消
+                </button>
+                <button id="modal-confirm" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/20">
+                    继续下载
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const COLOR_MAP = {
+            blue:   { icon: 'bg-blue-600/20',   text: 'text-blue-400',   glow: 'from-blue-600/5',   arrow: 'text-blue-400' },
+            purple: { icon: 'bg-purple-600/20',  text: 'text-purple-400', glow: 'from-purple-600/5', arrow: 'text-purple-400' },
+            cyan:   { icon: 'bg-cyan-600/20',    text: 'text-cyan-400',   glow: 'from-cyan-600/5',   arrow: 'text-cyan-400' },
+            green:  { icon: 'bg-green-600/20',   text: 'text-green-400',  glow: 'from-green-600/5',  arrow: 'text-green-400' },
+            orange: { icon: 'bg-orange-600/20',  text: 'text-orange-400', glow: 'from-orange-600/5', arrow: 'text-orange-400' },
+            pink:   { icon: 'bg-pink-600/20',    text: 'text-pink-400',   glow: 'from-pink-600/5',   arrow: 'text-pink-400' },
+        };
+
+        let pendingUrl = '';
+
+        function buildLineCard(line, index) {
+            const c = COLOR_MAP[line.color] || COLOR_MAP.blue;
+            const card = document.createElement('div');
+            card.className = 'line-card glass-card p-6 rounded-2xl flex items-center gap-5 opacity-0 translate-y-6';
+            card.setAttribute('data-color', line.color || 'blue');
+            card.innerHTML = `
+                <div class="line-glow absolute inset-0 bg-gradient-to-br ${c.glow} to-transparent rounded-2xl"></div>
+                <div class="w-12 h-12 ${c.icon} rounded-xl flex items-center justify-center flex-shrink-0 relative z-10">
+                    <i data-lucide="${line.icon || 'download'}" class="${c.text} w-6 h-6"></i>
+                </div>
+                <div class="flex-1 min-w-0 relative z-10">
+                    <div class="font-bold text-base">${line.label}</div>
+                    <div class="text-gray-500 text-sm mt-0.5 truncate">${line.description || ''}</div>
+                </div>
+                <div class="flex-shrink-0 relative z-10">
+                    <i data-lucide="arrow-right" class="${c.arrow} w-5 h-5 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                if (line.tip && line.tip.trim() !== '') {
+                    pendingUrl = line.url;
+                    document.getElementById('modal-tip').textContent = line.tip;
+                    document.getElementById('modal').classList.add('active');
+                } else {
+                    window.open(line.url, '_blank');
+                }
+            });
+
+            return card;
+        }
+
+        function closeModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('modal').classList.remove('active');
+            pendingUrl = '';
+        }
+
+        document.getElementById('modal-confirm').addEventListener('click', () => {
+            if (pendingUrl) window.open(pendingUrl, '_blank');
+            closeModal();
+        });
+
+        // ESC 关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        window.onload = () => {
+            // 入场动画
+            gsap.to('#dl-header', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' });
+
+            fetch('./download.json')
+                .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+                .then(data => {
+                    // 填充版本信息
+                    document.getElementById('dl-meta').innerHTML =
+                        `开源免费，下载即用。选择最适合你的下载线路。`;
+                    document.getElementById('dl-version-tag').textContent = `v${data.version}`;
+                    document.getElementById('dl-build-date').textContent = `Build: ${data.build_date}`;
+                    const filesizeEl = document.getElementById('dl-filesize');
+                    if (data.filesize) filesizeEl.querySelector('span').textContent = data.filesize;
+                    else filesizeEl.style.display = 'none';
+
+                    gsap.to('#dl-version-card', { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+                    gsap.to('#dl-lines-title', { opacity: 1, y: 0, duration: 0.8, delay: 0.3, ease: 'power3.out' });
+
+                    // 渲染下载线路
+                    const container = document.getElementById('dl-lines-container');
+                    container.innerHTML = '';
+
+                    if (!data.lines || data.lines.length === 0) {
+                        container.innerHTML = '<p class="text-gray-500 text-center py-8 font-mono text-sm">// 暂无可用线路</p>';
+                        return;
+                    }
+
+                    data.lines.forEach((line, i) => {
+                        const card = buildLineCard(line, i);
+                        container.appendChild(card);
+                        lucide.createIcons({ nodes: [card] });
+                        gsap.to(card, { opacity: 1, y: 0, duration: 0.6, delay: 0.4 + i * 0.1, ease: 'power3.out' });
+                    });
+
+                    gsap.to('#dl-requirements', { opacity: 1, y: 0, duration: 0.8, delay: 0.4 + data.lines.length * 0.1, ease: 'power3.out' });
+                })
+                .catch(err => {
+                    console.error('Failed to load download.json:', err);
+                    document.getElementById('dl-lines-container').classList.add('hidden');
+                    document.getElementById('dl-lines-title').classList.add('hidden');
+                    document.getElementById('dl-error').classList.remove('hidden');
+                    gsap.to('#dl-requirements', { opacity: 1, y: 0, duration: 0.8, delay: 0.5, ease: 'power3.out' });
+                });
+        };
+    </script>
+</body>
+</html>
