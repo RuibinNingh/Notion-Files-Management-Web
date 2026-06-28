@@ -1,6 +1,13 @@
 {
   "notices": [
     {
+      "id": "20260628.1",
+      "title": "迁移声明",
+      "date": "2026-06-28",
+      "tags": ["通知"],
+      "pinned": true
+    },
+    {
       "id": "20260221.1",
       "title": "欢迎使用 Notion Files Management",
       "date": "2026-02-21",
