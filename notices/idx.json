@@ -1,17 +1,31 @@
 {
   "notices": [
     {
+      "id": "20260629.1",
+      "title": "v2.0.0-Beta 发布说明",
+      "date": "2026-06-29",
+      "tags": [
+        "更新",
+        "Beta"
+      ],
+      "pinned": true
+    },
+    {
       "id": "20260628.1",
       "title": "迁移声明",
       "date": "2026-06-28",
-      "tags": ["通知"],
+      "tags": [
+        "通知"
+      ],
       "pinned": true
     },
     {
       "id": "20260221.1",
       "title": "欢迎使用 Notion Files Management",
       "date": "2026-02-21",
-      "tags": ["通知"],
+      "tags": [
+        "通知"
+      ],
       "pinned": true
     }
   ]

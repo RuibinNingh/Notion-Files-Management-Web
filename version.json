@@ -1,6 +1,6 @@
 {
-  "version": "1.5.2-Status",
-  "build_date": "2026-02-23",
+  "version": "2.0.0-Beta",
+  "build_date": "2026-06-29",
   "github": "RuibinNingh/Notion-Files-Management",
   "download": {
     "manual": {
@@ -18,21 +18,21 @@
       {
         "id": "github",
         "label": "GitHub Release",
-        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v1.5.2/Notion-Files-Management.exe",
+        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v2.0.0-Beta/Notion-Files-Management.exe",
         "priority": 2,
         "type": "exe"
       }
     ]
   },
   "changelog": [
-    "新增上传文件夹:上传页面支持选择整个文件夹,子文件夹自动创建对应 Notion 子页面,保持目录结构",
-    "自动推送背景增强:启动时静默检测服务端默认背景变更并自动切换,修复预设选择保存后丢失的问题",
-    "工具箱查询单页面全面提升:扫描与大小探测并行(8线程即时探测),文件列表实时渲染,大小单位自适应 B/KB/MB/GB,新增实时计时器与取消按钮",
-    "下载/上传任务列表自适应高度:移除固定 MaxHeight 限制,放大窗口时列表自动填满可用空间",
-    "公告超链接彻底修复:兼容 MdXaml NavigateUri 与 CommandParameter 两种模式,页面切换后链接依然可正常点击",
-    "修复工具箱查询总大小始终为 0:改用 urllib 双策略(HEAD → Range GET)替代 requests 库,正确探测 Notion S3 URL 文件大小",
-    "修复工具箱查询总大小不实时更新:每次轮询均读取列表并更新统计,不再依赖传统探测进度计数",
-    "修复工具箱查询 UI 长时间停留在「准备开始」:阻塞前立即更新状态文本,列表获取完成后主动触发初始进度回调",
-    "修复下载页取消按钮未中止后端探测:新增 cancel_probe() 通知后端停止探测线程池"
+    "Web 重构首发:从 WPF/C# 桌面版迁移为 FastAPI + Vue 3 本地 Web Console,浏览器访问即可使用",
+    "新增全局任务看板:统一查看扫描、上传、下载等长任务,支持取消、重试和下载产物入口",
+    "新增云端缓存管理:查看、下载、删除上传缓存/下载产物/临时 zip,并支持自动清理策略",
+    "新增第三方开放 API 与 API Key 鉴权:支持 scope、过期时间、限流、启停和短期 SSE token",
+    "新增 Windows 迁移包:双击 exe 启动本机 FastAPI 服务并自动打开浏览器,默认使用 127.0.0.1:18765",
+    "新增 VitePress 文档站:提供用户指南、部署文档、开放 API 文档和版本记录",
+    "下载体验增强:支持任务详情、性能诊断、缓存可读名称、重新下载和实验性 Range 分片下载开关",
+    "安全加固:修复 SSRF、上传会话路径越界、密码比较、输入边界、CORS 和 API Key 明文暴露面",
+    "渠道机制:默认 Beta,Status/Beta 版本检查与公告 endpoint 隔离,Web 设置页不暴露渠道修改"
   ]
 }
