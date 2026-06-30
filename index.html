@@ -160,10 +160,10 @@
                 </h1>
                 <p id="typewriter" class="text-xl md:text-2xl font-mono text-blue-300/90 mb-10 h-8">_</p>
                 <div class="flex justify-center gap-4 flex-wrap">
-                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="cpu" class="w-3 h-3"></i> .NET 8.0 WPF</div>
-                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="code-2" class="w-3 h-3"></i> Python 3.11 Embedded</div>
-                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="lock" class="w-3 h-3"></i> GIL-Safe Async</div>
-                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="zap" class="w-3 h-3"></i> 多线程并发</div>
+                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="server" class="w-3 h-3"></i> FastAPI</div>
+                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="panel-top" class="w-3 h-3"></i> Vue 3 Web Console</div>
+                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="radio" class="w-3 h-3"></i> HTTP / SSE</div>
+                    <div class="tech-tag px-4 py-2 rounded text-xs flex items-center gap-2"><i data-lucide="key-round" class="w-3 h-3"></i> API Key</div>
                 </div>
 
                 <div class="flex justify-center gap-6 mt-10">
@@ -180,7 +180,50 @@
                 <div id="main-preview-container" class="hero-card-container glass-card rounded-2xl p-1 relative z-10">
                     <div class="hero-glow group-hover:opacity-100"></div>
                     <div class="rounded-xl overflow-hidden relative z-20 border border-white/10">
-                        <img src="screenshot/主页页面,程序运行时默认页面.png" alt="UI Preview" class="w-full h-auto block">
+                        <div class="bg-[#0a0d14] p-6 text-left min-h-[420px]">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+                                <div class="flex items-center gap-3">
+                                    <img src="icon.png" alt="Logo" class="w-9 h-9 rounded-lg" />
+                                    <div>
+                                        <div class="text-white font-bold">NFM Web Console</div>
+                                        <div class="text-xs text-gray-500 font-mono">v2.0.0-Beta · FastAPI + Vue 3</div>
+                                    </div>
+                                </div>
+                                <div class="px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-mono">Beta</div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                                <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                                    <div class="text-xs text-gray-500 mb-2">Notion Token</div>
+                                    <div class="text-emerald-300 font-bold">已配置</div>
+                                </div>
+                                <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                                    <div class="text-xs text-gray-500 mb-2">运行中任务</div>
+                                    <div class="text-blue-300 font-bold">3</div>
+                                </div>
+                                <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                                    <div class="text-xs text-gray-500 mb-2">缓存管理</div>
+                                    <div class="text-cyan-300 font-bold">自动清理</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="rounded-xl border border-blue-500/20 bg-blue-500/5 p-5">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <i data-lucide="download-cloud" class="w-5 h-5 text-blue-300"></i>
+                                        <div class="font-bold">批量下载</div>
+                                    </div>
+                                    <div class="h-2 rounded bg-white/10 overflow-hidden"><div class="h-full w-[74%] bg-blue-500"></div></div>
+                                    <div class="mt-3 text-xs text-gray-400">扫描 · 选择 · ZIP 打包 · 链接刷新</div>
+                                </div>
+                                <div class="rounded-xl border border-purple-500/20 bg-purple-500/5 p-5">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <i data-lucide="upload-cloud" class="w-5 h-5 text-purple-300"></i>
+                                        <div class="font-bold">批量上传</div>
+                                    </div>
+                                    <div class="h-2 rounded bg-white/10 overflow-hidden"><div class="h-full w-[46%] bg-purple-500"></div></div>
+                                    <div class="mt-3 text-xs text-gray-400">文件夹 · 子页面 · SSE 进度</div>
+                                </div>
+                            </div>
+                        </div>
                         <div id="hero-sheen" class="hero-sheen bg-[position:50%_50%]"></div>
                     </div>
                 </div>
@@ -220,7 +263,7 @@
             <div class="glass-card p-8 scroll-item opacity-0 translate-y-20 feature-card">
                 <div class="text-blue-500 font-mono text-5xl mb-6 opacity-20">01</div>
                 <h3 class="text-xl font-bold mb-3">获取程序</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">下载并解压最新发行版，无需安装 Python。确保系统为 Windows 10/11 x64。</p>
+                <p class="text-gray-400 text-sm leading-relaxed">下载 Windows 迁移包,或按文档使用 Docker / systemd 部署。默认端口统一为 18765。</p>
             </div>
 
             <div class="glass-card p-8 scroll-item opacity-0 translate-y-20 feature-card">
@@ -342,7 +385,7 @@
                 <ul class="space-y-3 relative">
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-green-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">MdXaml 渲染 Markdown 正文，支持置顶、标签色块、日期排序</span>
+                        <span class="text-sm text-gray-300">markdown-it 渲染 Markdown 正文，支持置顶、标签色块、日期排序</span>
                     </li>
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-green-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
@@ -358,16 +401,16 @@
                         <i data-lucide="palette" class="text-rose-400 w-8 h-8"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-black mb-4 relative">个性化外观</h3>
-                <p class="text-gray-400 leading-relaxed mb-6 relative">主题色与背景材质深度自定义，打造专属工作空间。</p>
+                <h3 class="text-2xl font-black mb-4 relative">主题与缓存策略</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">在 Web 设置页管理主题色、并发、缓存 TTL 和清理策略，配置统一持久化。</p>
                 <ul class="space-y-3 relative">
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-rose-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">主题色设置：HSV / RGB 颜色空间选择，预设颜色快速切换</span>
+                        <span class="text-sm text-gray-300">主题色设置：前端实时应用，适配 Element Plus 暗色界面</span>
                     </li>
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-rose-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">背景材质：自动推送服务端预设图片/视频、云母、亚克力、自定义图片/视频（含模糊度与不透明度调节）</span>
+                        <span class="text-sm text-gray-300">缓存策略：上传缓存、下载产物和临时 zip 可查看、下载、删除或按 TTL 自动清理</span>
                     </li>
                 </ul>
             </div>
@@ -379,16 +422,16 @@
                         <i data-lucide="refresh-cw" class="text-orange-400 w-8 h-8"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-black mb-4 relative">自动更新 & 配置</h3>
-                <p class="text-gray-400 leading-relaxed mb-6 relative">启动时静默检查新版本，一键自动更新。配置持久化，跨版本无缝迁移。</p>
+                <h3 class="text-2xl font-black mb-4 relative">版本检查 & 配置</h3>
+                <p class="text-gray-400 leading-relaxed mb-6 relative">从发布站读取版本信息和公告，在设置页查看更新内容；当前 v2 Web 不执行自动下载安装。</p>
                 <ul class="space-y-3 relative">
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-orange-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">多线路优先级 fallback 自动下载更新，支持裸 exe 自替换</span>
+                        <span class="text-sm text-gray-300">Windows 安装包由 GitHub Release 托管，发布站只提供版本信息和下载入口</span>
                     </li>
                     <li class="flex items-start gap-3">
                         <i data-lucide="check-circle" class="text-orange-400 w-5 h-5 mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-gray-300">Notion Token、API 地址、并发数等参数可视化配置，配置保存在 %AppData%</span>
+                        <span class="text-sm text-gray-300">Notion Token、API 地址、并发数、API Key 和 CORS 白名单可视化配置</span>
                     </li>
                 </ul>
             </div>
@@ -415,22 +458,22 @@
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">WPF 前端（C#）</div>
-                            <div class="text-gray-400">基于 .NET 8.0 和 WPF-UI 4.2.0 构建的现代化桌面界面</div>
+                            <div class="font-bold text-white mb-1">Vue 3 前端</div>
+                            <div class="text-gray-400">基于 Vue 3、Vite 和 Element Plus 构建的浏览器控制台</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">Python 后端</div>
-                            <div class="text-gray-400">Python 3.11 处理 Notion API 调用和文件传输逻辑</div>
+                            <div class="font-bold text-white mb-1">FastAPI 后端</div>
+                            <div class="text-gray-400">Python 3.11 处理 Notion API、鉴权、任务注册和文件传输</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">pythonnet 桥接</div>
-                            <div class="text-gray-400">C# 通过 pythonnet 3.0.5 无缝调用 Python 代码</div>
+                            <div class="font-bold text-white mb-1">HTTP / SSE 通信</div>
+                            <div class="text-gray-400">前端通过 REST API 创建任务，通过 Server-Sent Events 接收进度</div>
                         </div>
                     </div>
                 </div>
@@ -441,28 +484,28 @@
                     <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center">
                         <i data-lucide="shield-check" class="text-purple-400"></i>
                     </div>
-                    <h3 class="text-xl font-bold">GIL 安全机制</h3>
+                    <h3 class="text-xl font-bold">任务隔离机制</h3>
                 </div>
                 <div class="space-y-4 text-sm text-gray-300">
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">串行化调用</div>
-                            <div class="text-gray-400">PythonBackendHost 通过 SemaphoreSlim 确保单线程访问</div>
+                            <div class="font-bold text-white mb-1">每任务独立实例</div>
+                            <div class="text-gray-400">Download、Upload、ScanSession 按 task_id 隔离，避免状态污染</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">GIL 包裹</div>
-                            <div class="text-gray-400">每次 Python 调用都包裹在 Py.GIL() 中</div>
+                            <div class="font-bold text-white mb-1">后台线程执行</div>
+                            <div class="text-gray-400">耗时扫描、上传、下载任务在后台运行，不阻塞 Web 请求</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">避免死锁</div>
-                            <div class="text-gray-400">异步轮询设计，确保 UI 响应性</div>
+                            <div class="font-bold text-white mb-1">统一终态事件</div>
+                            <div class="text-gray-400">任务完成、失败或取消统一通过 SSE done 事件通知前端</div>
                         </div>
                     </div>
                 </div>
@@ -473,28 +516,28 @@
                     <div class="w-12 h-12 bg-cyan-600/20 rounded-lg flex items-center justify-center">
                         <i data-lucide="database" class="text-cyan-400"></i>
                     </div>
-                    <h3 class="text-xl font-bold">会话持久化</h3>
+                    <h3 class="text-xl font-bold">任务与缓存管理</h3>
                 </div>
                 <div class="space-y-4 text-sm text-gray-300">
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">单例模式</div>
-                            <div class="text-gray-400">DownloadSession 和 UploadSession 全局唯一实例</div>
+                            <div class="font-bold text-white mb-1">全局任务注册表</div>
+                            <div class="text-gray-400">统一保存任务状态、进度、重试闭包和产物入口</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">状态保留</div>
-                            <div class="text-gray-400">页面切换时保留任务列表和配置参数</div>
+                            <div class="font-bold text-white mb-1">缓存元数据</div>
+                            <div class="text-gray-400">上传缓存、下载产物和生成 zip 都带可读名称和稳定存储 ID</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">自动恢复</div>
-                            <div class="text-gray-400">页面加载时根据会话状态恢复轮询</div>
+                            <div class="font-bold text-white mb-1">运行中保护</div>
+                            <div class="text-gray-400">自动清理会跳过仍被任务引用的缓存目录</div>
                         </div>
                     </div>
                 </div>
@@ -505,28 +548,28 @@
                     <div class="w-12 h-12 bg-orange-600/20 rounded-lg flex items-center justify-center">
                         <i data-lucide="gauge" class="text-orange-400"></i>
                     </div>
-                    <h3 class="text-xl font-bold">异步轮询机制</h3>
+                    <h3 class="text-xl font-bold">实时进度机制</h3>
                 </div>
                 <div class="space-y-4 text-sm text-gray-300">
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">定时器轮询</div>
-                            <div class="text-gray-400">UI 通过定时器定期获取后端任务状态</div>
+                            <div class="font-bold text-white mb-1">SSE 推送</div>
+                            <div class="text-gray-400">浏览器通过 EventSource 订阅任务进度，减少页面主动轮询</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">UI 响应保障</div>
-                            <div class="text-gray-400">避免阻塞 UI 线程，保持界面流畅</div>
+                            <div class="font-bold text-white mb-1">任务看板</div>
+                            <div class="text-gray-400">跨页面查看运行中、完成、失败和取消任务</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
                         <div>
-                            <div class="font-bold text-white mb-1">实时更新</div>
-                            <div class="text-gray-400">进度、速度、ETA 实时刷新显示</div>
+                            <div class="font-bold text-white mb-1">短期 SSE token</div>
+                            <div class="text-gray-400">第三方订阅进度使用 nfmsse_ 短期 token，长期 API Key 不放 URL</div>
                         </div>
                     </div>
                 </div>
@@ -552,33 +595,33 @@
                     <tbody class="text-gray-300">
                         <tr class="border-b border-white/5">
                             <td class="py-4 font-mono text-xs text-blue-300">前端框架</td>
-                            <td class="py-4">WPF</td>
-                            <td class="py-4 font-mono">.NET 8.0</td>
-                            <td class="py-4 text-gray-400">现代化桌面 UI 框架</td>
+                            <td class="py-4">Vue 3 + Vite</td>
+                            <td class="py-4 font-mono">Vue 3 / Vite 5</td>
+                            <td class="py-4 text-gray-400">浏览器端 Web 控制台</td>
                         </tr>
                         <tr class="border-b border-white/5">
                             <td class="py-4 font-mono text-xs text-blue-300">UI 组件库</td>
-                            <td class="py-4">WPF-UI</td>
-                            <td class="py-4 font-mono">4.2.0</td>
-                            <td class="py-4 text-gray-400">现代化 UI 组件</td>
+                            <td class="py-4">Element Plus</td>
+                            <td class="py-4 font-mono">2.7+</td>
+                            <td class="py-4 text-gray-400">暗色 UI 组件与交互控件</td>
                         </tr>
                         <tr class="border-b border-white/5">
-                            <td class="py-4 font-mono text-xs text-blue-300">Python 桥接</td>
-                            <td class="py-4">pythonnet</td>
-                            <td class="py-4 font-mono">3.0.5</td>
-                            <td class="py-4 text-gray-400">C# 调用 Python 代码</td>
+                            <td class="py-4 font-mono text-xs text-blue-300">后端框架</td>
+                            <td class="py-4">FastAPI + Uvicorn</td>
+                            <td class="py-4 font-mono">Python 3.11</td>
+                            <td class="py-4 text-gray-400">REST API、鉴权、任务调度和静态托管</td>
                         </tr>
                         <tr class="border-b border-white/5">
-                            <td class="py-4 font-mono text-xs text-blue-300">Python 运行时</td>
-                            <td class="py-4">Python Embedded</td>
-                            <td class="py-4 font-mono">3.11</td>
-                            <td class="py-4 text-gray-400">内嵌 Python 环境</td>
+                            <td class="py-4 font-mono text-xs text-blue-300">实时进度</td>
+                            <td class="py-4">Server-Sent Events</td>
+                            <td class="py-4 font-mono">sse-starlette</td>
+                            <td class="py-4 text-gray-400">长任务进度、终态和重连</td>
                         </tr>
                         <tr>
                             <td class="py-4 font-mono text-xs text-blue-300">Markdown 渲染</td>
-                            <td class="py-4">MdXaml</td>
-                            <td class="py-4 font-mono">1.27.0</td>
-                            <td class="py-4 text-gray-400">公告系统 Markdown 转 FlowDocument</td>
+                            <td class="py-4">markdown-it</td>
+                            <td class="py-4 font-mono">14.x</td>
+                            <td class="py-4 text-gray-400">公告正文渲染</td>
                         </tr>
                         <tr>
                             <td class="py-4 font-mono text-xs text-blue-300">后端逻辑</td>
@@ -602,7 +645,7 @@
             </div>
             <h2 class="text-4xl font-black mb-6 italic">准备好体验极致文件管理了吗？</h2>
             <p class="text-lg text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-                开源免费，无需安装 Python 环境。下载即用，支持 Windows 10/11 x64 平台。
+                开源免费，可下载 Windows 迁移包本地运行，也可用 Docker / systemd 部署到服务器。
             </p>
             <div class="bg-gray-900/50 rounded-xl p-6 mb-8 font-mono text-xs text-left relative overflow-hidden">
                 <div class="shimmer absolute inset-0"></div>
@@ -682,7 +725,7 @@
             }, 30);
         }
 
-        const typeText = "批量下载、智能上传、工具箱、公告系统、个性化外观 —— WPF + Python 强力驱动。_";
+        const typeText = "批量下载、智能上传、任务看板、开放 API —— FastAPI + Vue 3 驱动。_";
         let typeIndex = 0;
         const typeTarget = document.getElementById("typewriter");
         function typeWriter() {

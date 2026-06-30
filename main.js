@@ -2,7 +2,7 @@
 lucide.createIcons();
 
 // 1. 打字机效果
-const text = "Notion 终极文件管理方案: WPF + Python 驱动";
+const text = "Notion 终极文件管理方案: FastAPI + Vue 3 驱动";
 let i = 0;
 function typeWriter() {
     if (i < text.length) {
