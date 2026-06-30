@@ -171,15 +171,13 @@
             <div id="dl-lines-title" class="opacity-0 translate-y-10 mb-6">
                 <h2 class="text-2xl font-black flex items-center gap-3 italic">
                     <span class="text-blue-500">#</span> DOWNLOAD LINES
-                    <span class="text-gray-600 text-sm not-italic font-mono">// 选择下载线路</span>
+                    <span class="text-gray-600 text-sm not-italic font-mono">// GitHub Release</span>
                 </h2>
             </div>
 
             <!-- 线路列表 (动态渲染) -->
             <div id="dl-lines-container" class="space-y-4 mb-16">
                 <!-- 骨架屏占位 -->
-                <div class="skeleton h-24"></div>
-                <div class="skeleton h-24"></div>
                 <div class="skeleton h-24"></div>
             </div>
 
@@ -340,7 +338,7 @@
                 .then(data => {
                     // 填充版本信息
                     document.getElementById('dl-meta').innerHTML =
-                        `开源免费，下载即用。选择最适合你的下载线路。`;
+                        `开源免费，下载即用。安装包由 GitHub Release 托管。`;
                     document.getElementById('dl-version-tag').textContent = `v${data.version}`;
                     document.getElementById('dl-build-date').textContent = `Build: ${data.build_date}`;
                     const filesizeEl = document.getElementById('dl-filesize');

@@ -9,17 +9,10 @@
     },
     "auto": [
       {
-        "id": "main",
-        "label": "主线路",
-        "url": "https://nfm.ruibin-ningh.top/download/Notion-Files-Management.exe",
-        "priority": 1,
-        "type": "exe"
-      },
-      {
         "id": "github",
         "label": "GitHub Release",
-        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v2.0.0-Beta/Notion-Files-Management.exe",
-        "priority": 2,
+        "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v2.0.0/NOTION_FILES_MANAGEMENT_v2.0.0-Beta.exe",
+        "priority": 1,
         "type": "exe"
       }
     ]

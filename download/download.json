@@ -1,25 +1,16 @@
 {
   "version": "2.0.0-Beta",
   "build_date": "2026-06-29",
-  "filename": "Notion-Files-Management.exe",
-  "filesize": "约 90 MB",
+  "filename": "NOTION_FILES_MANAGEMENT_v2.0.0-Beta.exe",
+  "filesize": "约 17 MB",
   "lines": [
     {
       "id": "github",
       "label": "GitHub Release",
-      "description": "全球 CDN，稳定可靠",
-      "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v2.0.0-Beta/Notion-Files-Management.exe",
+      "description": "官方发布资产，版本号自动生成下载链接",
+      "url": "https://github.com/RuibinNingh/Notion-Files-Management/releases/download/v2.0.0/NOTION_FILES_MANAGEMENT_v2.0.0-Beta.exe",
       "icon": "github",
       "color": "purple",
-      "tip": "GitHub 在国内访问可能较慢，可改用备用镜像线路。确定继续吗？"
-    },
-    {
-      "id": "mirror",
-      "label": "站内镜像",
-      "description": "本站直链下载,速度视网络状况而定",
-      "url": "https://nfm.ruibin-ningh.top/download/Notion-Files-Management.exe",
-      "icon": "server",
-      "color": "cyan",
       "tip": ""
     }
   ]
